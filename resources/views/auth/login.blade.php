@@ -113,8 +113,9 @@
             </div>
             <div class="flex items-center justify-between mt-6">
                 <div class="flex items-center">
-                    <input type="checkbox" id="agreement"
-                           class="text-primary focus:ring-0 rounded-sm cursor-pointer">
+                    <input type="checkbox"
+                           class="text-primary focus:ring-0 rounded-sm cursor-pointer"
+                           name="remember" id="remember" {{ old('remember') ? 'checked' : ''}}>
                     <label for="agreement" class="text-gray-600 ml-3 cursor-pointer">
                         Remember Me
                     </label>

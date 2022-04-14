@@ -120,6 +120,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/nunomaduro/collision" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/ui" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/brian2694/laravel-toastr" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/teapot/status-code" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/shrikeh/teapot" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cloudinary/cloudinary_php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cloudinary-labs/cloudinary-laravel" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

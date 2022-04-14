@@ -1,7 +1,7 @@
 @extends('app.layouts.header')
 @section('content')
     <!-- banner -->
-    <div class="bg-cover bg-no-repeat bg-center py-36 relative" style="background-image: url('images/banner-bg.jpg')">
+    <div class="bg-cover bg-no-repeat bg-center py-36 relative" style="background-image: url('images/banner.png')">
         <div class="container">
             <!-- banner content -->
             <h1 class="xl:text-6xl md:text-5xl text-4xl text-gray-800 font-medium mb-4">
@@ -13,7 +13,7 @@
             </p>
             <!-- banner button -->
             <div class="mt-12">
-                <a href="shop.html" class="bg-primary border border-primary text-white px-8 py-3 font-medium rounded-md uppercase hover:bg-transparent
+                <a href="/product" class="bg-primary border border-primary text-white px-8 py-3 font-medium rounded-md uppercase hover:bg-transparent
                hover:text-primary transition">
                     Shop now
                 </a>
@@ -69,58 +69,30 @@
         <div class="grid lg:grid-cols-3 sm:grid-cols-2 gap-3">
             <!-- single category -->
             <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-1.jpg" class="w-full">
+                <img src="images/category/newshose.jpg" class="w-full">
                 <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
                     font-roboto font-medium tracking-wide transition">
-                    Bedroom
+                    Giày Mới
                 </a>
             </div>
             <!-- single category end -->
             <!-- single category -->
             <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-5.jpg" class="w-full">
+                <img src="images/category/giay2hand.png" class="w-full">
                 <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
                     font-roboto font-medium tracking-wide transition">
-                    Sofa
+                    Giày 2HAND
                 </a>
             </div>
             <!-- single category end -->
             <!-- single category -->
             <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-3.jpg" class="w-full">
+                <img src="images/category/Quanaophukien.jpg" class="w-full">
                 <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
                     font-roboto font-medium tracking-wide transition">
-                    Office
+                    Quần Áo & Phụ kiện
                 </a>
             </div>
-            <!-- single category end -->
-            <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-4.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
-                    font-roboto font-medium tracking-wide transition">
-                    Outdoor
-                </a>
-            </div>
-            <!-- single category end -->
-            <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-2.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
-                    font-roboto font-medium tracking-wide transition">
-                    Mattress
-                </a>
-            </div>
-            <!-- single category end -->
-            <!-- single category -->
-            <div class="relative group rounded-sm overflow-hidden" >
-                <img src="images/category/category-6.jpg" class="w-full">
-                <a href="#" class="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 flex items-center justify-center text-xl text-white
-                        font-roboto font-medium tracking-wide transition">
-                    Dinings
-                </a>
-            </div>
-            <!-- single category end -->
         </div>
     </div>
     <!-- categories end -->
@@ -334,7 +306,7 @@
     <!-- ad section -->
     <div class="container pb-16">
         <a href="#">
-            <img src="images/offer.jpg" class="w-full">
+            <img src="images/offer.png" class="w-full">
         </a>
     </div>
     <!-- ad section end -->
