@@ -13,8 +13,8 @@ function detailItem(id,url){
         data: id,
     }).done(function (res){
         $('#name').text('Name: ' + res.name);
-        $('#description').text('Description: ' + res.name);
-        $('#content').text('content: ' + res.name);
+        $('#description').text('Description: ' + res.description);
+        $('#content').text('content: ' + res.content);
         let active = res.active == '1' ? true : false;
         $('#active').text('active: ' + active);
     })
@@ -24,7 +24,7 @@ function editItem(url){
     window.location.href = url;
 }
 
-function deleteItem(id,url){
+function deleteItem(url){
     var result = confirm('Do you want to delete');
     if(result)  {
         $.ajax({
@@ -41,29 +41,14 @@ function deleteItem(id,url){
     }
 }
 
+function detailProduct(id,url){
+    console.log(id);
+    console.log(url);
+}
+
 $(document).ready(function (){
      $(document).on('submit','#editform', function (e){
-         var id = $('#editid').val();
-         var name = $('#editname').val();
-         var description = $('#editdescription').val();
-         var content = $('#editcontent').val();
 
-         var active_check = document.getElementsByName('active_edit');
-         if(active_check[0].checked){
-             var active = $('#editactive1').val();
-         }else if(active_check[1].checked){
-             var active = $('#editactive0').val();
-         }
-         const editdata = {name,description,content,active}
-         $.ajax({
-             method: 'POST',
-             dataType: "JSON",
-             url: `/admin/category/${id}`,
-             data:{
-                 _token: $('#token').val(),
-                 data: editdata,
-             },
-         });
      })
 })
 

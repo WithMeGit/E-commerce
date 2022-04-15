@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-class accountcontroller extends Controller
+class AccountController extends Controller
 {
     public function index(){
         return view("admin.home");
@@ -18,17 +19,12 @@ class accountcontroller extends Controller
         return view("admin.login");
     }
 
-    public function login(Request $request){
-
-        $request->validate([
-            'email' => 'email|required',
-            'password' => 'required',
-        ]);
+    public function login(LoginRequest $request){
 
         $loginData = User::where('email','=',$request->email)->first();
 
         if(!$loginData){
-            return redirect() -> back()->with('fail','Email dose not exist');
+            return redirect()->back()->with('fail','Email dose not exist');
         }else{
             if(Hash::check($request->password,$loginData->password)){
                 auth::login($loginData,true);
@@ -52,7 +48,7 @@ class accountcontroller extends Controller
         return view("admin.register");
     }
 
-    public function register(Request $request){
+    public function register(RegisterRequest $request){
         $input = $request->all();
 
         $request->validate([

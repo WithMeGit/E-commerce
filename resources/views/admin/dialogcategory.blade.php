@@ -9,14 +9,15 @@
                     <input type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                            name="name"
                            value="{{$category->name}}"
+                           required
                            placeholder="Name Category">
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="description"
+                    <textarea name="description" required
                               class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description">{{$category->description}}</textarea>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="content"
+                    <textarea name="content" required
                               class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content">{{$category->content}}</textarea>
                 </div>
                 <div class="form-group mb-6">
@@ -46,14 +47,14 @@
                 @csrf
                 <div class="form-group mb-6">
                     <input type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                           name="name"
+                           name="name" required
                            placeholder="Name Category">
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="description" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description"></textarea>
+                    <textarea name="description" required class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description"></textarea>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="content" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content"></textarea>
+                    <textarea name="content" required class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content"></textarea>
                 </div>
                 <div class="form-group mb-6">
                     <div class="form-control">
@@ -78,12 +79,25 @@
         @endif
 
     </div>
-
     @if (Session::has('error'))
         <script>
             toastr.error('{{ Session::get('error') }}');
         </script>
     @endif
-
+    @error('name')
+    <script>
+        toastr.error('{{$message}}');
+    </script>
+    @enderror
+    @error('description')
+    <script>
+        toastr.error('{{$message}}');
+    </script>
+    @enderror
+    @error('content')
+    <script>
+        toastr.error('{{$message}}');
+    </script>
+    @enderror
     <div class="mb-20"></div>
 @endsection

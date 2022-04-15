@@ -3,12 +3,13 @@
     <div class="max-w-[700px] mx-auto px-3 lg:px-6">
         <h2 class="text-3xl font-bold mb-12">{{$title}}</h2>
         @if(isset($brand))
-            <form action="/admin/brand/{{$brand->id}}" method="post">
+            <form action="/admin/brands/{{$brand->id}}" method="post">
                 @csrf
                 <div class="form-group mb-6">
                     <input type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                            name="name"
                            value="{{$brand->name}}"
+                           required
                            placeholder="Name Brand">
                 </div>
                 <div class="form-group mb-6">
@@ -22,11 +23,11 @@
                     </div>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="description"
+                    <textarea name="description" required
                               class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description">{{$brand->description}}</textarea>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="content"
+                    <textarea name="content" required
                               class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content">{{$brand->content}}</textarea>
                 </div>
                 <div class="form-group mb-6">
@@ -48,15 +49,16 @@
                 </div>
                 <button type="submit" class=" w-full px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out">{{$active}}</button>
                 <div class="mt-4 w-full px-6 py-2.5 bg-blue-600 leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
-                    <a href="/admin/brand" class="ml-60 px-6 py-2.5 text-white font-medium text-xs">Back To List</a>
+                    <a href="/admin/brands" class="ml-60 px-6 py-2.5 text-white font-medium text-xs">Back To List</a>
                 </div>
             </form>
         @else
-            <form action="/admin/brand" method="post">
+            <form action="/admin/brands" method="post">
                 @csrf
                 <div class="form-group mb-6">
                     <input type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                            name="name"
+                           required
                            placeholder="Name Brand">
                 </div>
                 <div class="form-group mb-6">
@@ -70,10 +72,10 @@
                     </div>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="description" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description"></textarea>
+                    <textarea name="description" required class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Description"></textarea>
                 </div>
                 <div class="form-group mb-6">
-                    <textarea name="content" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content"></textarea>
+                    <textarea name="content" required class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" rows="3" placeholder="Content"></textarea>
                 </div>
                 <div class="form-group mb-6">
                     <div class="form-control">
@@ -92,18 +94,31 @@
                 </div>
                 <button type="submit" class=" w-full px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out">{{$active}}</button>
                 <div class="mt-4 w-full px-6 py-2.5 bg-blue-600 leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
-                    <a href="/admin/brand" class="ml-60 px-6 py-2.5 text-white font-medium text-xs">Back To List</a>
+                    <a href="/admin/brands" class="ml-60 px-6 py-2.5 text-white font-medium text-xs">Back To List</a>
                 </div>
             </form>
         @endif
 
     </div>
-
     @if (Session::has('error'))
         <script>
             toastr.error('{{ Session::get('error') }}');
         </script>
     @endif
-
+    @error('name')
+        <script>
+            toastr.error('{{$message}}');
+        </script>
+    @enderror
+    @error('description')
+        <script>
+            toastr.error('{{$message}}');
+        </script>
+    @enderror
+    @error('content')
+        <script>
+            toastr.error('{{$message}}');
+        </script>
+    @enderror
     <div class="mb-20"></div>
 @endsection

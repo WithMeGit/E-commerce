@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BrandRequest;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class categorycontroller extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,20 +38,9 @@ class categorycontroller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'name'=> 'required',
-            'description' => 'required',
-            'content' => 'required',
-        ]);
-        if($validator->fails()){
-            $request->session()->flash('error', 'Fail!');
-            return redirect()->back();
-        }
-
         $check = Category::where('name','=',$request->name)->first();
-
         if($check)
         {
             $request->session()->flash('error', 'Category already exists');
@@ -93,27 +84,15 @@ class categorycontroller extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BrandRequest $request, $id)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required',
-            'description' => 'required',
-            'content' => 'required',
-        ]);
-
-        if($validator->fails()){
-            $request->session()->flash('error', 'Edit fail!');
-            return redirect()->back();
-        }else{
-            $cate = Category::find($id);
-            $cate->name = $request->name;
-            $cate->description = $request->description;
-            $cate->content = $request['content'];
-            $cate->active = $request->active;
-
-            $cate->save();
-            $request->session()->flash('success', 'Edited Successfully');
-        }
+        $cate = Category::find($id);
+        $cate->name = $request->name;
+        $cate->description = $request->description;
+        $cate->content = $request['content'];
+        $cate->active = $request->active;
+        $cate->save();
+        $request->session()->flash('success', 'Edited Successfully');
 
         return redirect("/admin/category");
     }

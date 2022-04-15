@@ -25,6 +25,6 @@ class admin
             }
         }
 
-        return redirect('admin/login')->with('fail','you are not admin');
+        return redirect('admin/login');
     }
 }

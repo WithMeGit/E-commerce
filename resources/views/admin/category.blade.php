@@ -61,13 +61,12 @@
                                 <!-- Button view category modal -->
                             <button onclick="detailItem('{{ $category->id }}', '/admin/category/{{$category->id}}')" data-bs-toggle='modal'  data-bs-target='#viewModal'
                                     class="px-6 py-2.5 bg-green-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-600 active:shadow-lg transition duration-150 ease-in-out" ><i class="fas fa-eye fa-xs"></i></button>
-                                <!-- Button edit category modal -->
                             <button onclick="editItem('/admin/category/{{$category->id}}/edit')"
                                     class="px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
                                     data-bs-toggle='modal'
                                     data-bs-target='#editModal'
                             ><i class="fas fa-pen fa-xs"></i></button>
-                            <button onclick="deleteItem('{{ $category->id }}','/admin/category/{{ $category->id }}')" class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out " ><i class="fas fa-trash fa-xs"></i></button>
+                            <button onclick="deleteItem('/admin/category/{{ $category->id }}')" class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out " ><i class="fas fa-trash fa-xs"></i></button>
                             </td>
                         </tr>
                         @endforeach

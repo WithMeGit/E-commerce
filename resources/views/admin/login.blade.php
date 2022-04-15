@@ -14,50 +14,26 @@
                 <div class="md:w-8/12 lg:w-5/12 lg:ml-20">
                     <form action="/admin/login" method="post">
                         @csrf
-                        @if(Session::get('fail'))
-                            <div class="bg-yellow-100 rounded-lg py-5 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full" role="alert">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="w-4 h-4 mr-2 fill-current" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-                                </svg>
-                                {{ Session::get('fail') }}
-                            </div>
-                        @endif
                         <!-- Email input -->
                         <div class="mb-6">
                             <input
                                 type="email"
                                 class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                placeholder="Email address"
+                                placeholder="Email"
+                                required
                                 @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}"
                             />
                         </div>
-                            @error('email')
-                            <div class="bg-yellow-100 rounded-lg py-5 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full" role="alert">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="w-4 h-4 mr-2 fill-current" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-                                </svg>
-                                {{ $message }}
-                            </div>
-                        @enderror
-
                         <!-- Password input -->
                         <div class="mb-6">
                             <input
                                 type="password"
                                 class="form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 placeholder="Password"
+                                required
                                 @error('password') is-invalid @enderror" name="password" value="{{ old('password') }}"
                             />
                         </div>
-                            @error('password')
-                            <div class="bg-yellow-100 rounded-lg py-5 px-6 mb-3 text-base text-yellow-700 inline-flex items-center w-full" role="alert">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="w-4 h-4 mr-2 fill-current" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                    <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-                                </svg>
-                                {{ $message }}
-                            </div>
-                            @enderror
-
                         <div class="flex justify-between items-center mb-6">
                             <div class="form-group form-check">
                                 <input
@@ -71,26 +47,20 @@
                                 >Remember me</label
                                 >
                             </div>
-                            <a
-                                href="#!"
-                                class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
+                            <a href="#!" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
                             >Forgot password?</a>
                         </div>
 
                         <!-- Submit button -->
                         <button
                             type="submit"
-                            name="login"
                             class="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
                             data-mdb-ripple="true"
-                            data-mdb-ripple-color="light"
-                        >
+                            data-mdb-ripple-color="light">
                             Sign in
                         </button>
                         <div class="flex justify-between items-center mb-6 mt-6">
-                            <a
-                                href="/admin/register"
-                                class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
+                            <a href="/admin/register" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 duration-200 transition ease-in-out"
                             >Create an account</a>
                         </div>
 
@@ -99,5 +69,20 @@
             </div>
         </div>
     </section>
+    @if (Session::has('fail'))
+        <script>
+            toastr.error('{{ Session::get('fail') }}');
+        </script>
+    @endif
+    @error('email')
+    <script>
+        toastr.error('{{$message}}');
+    </script>
+    @enderror
+    @error('password')
+    <script>
+        toastr.error('{{$message}}');
+    </script>
+    @enderror
     </body>
 @endsection

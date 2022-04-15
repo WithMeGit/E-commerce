@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
-class brandcontroller extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,21 +39,9 @@ class brandcontroller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-           'name' => 'required',
-           'description' => 'required',
-           'content' => 'required',
-        ]);
-
-        if($validator->fails()){
-            $request->session()->flash('error', 'Fail!');
-            return redirect()->back();
-        }
-
         $check = Brand::where('name','=',$request->name)->first();
-
         if($check)
         {
             $request->session()->flash('error', 'Brand already exists');
@@ -97,28 +86,16 @@ class brandcontroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BrandRequest $request, $id)
     {
-        $validator = Validator::make($request->all(),[
-            'name' => 'required',
-            'description' => 'required',
-            'content' => 'required',
-        ]);
-
-        if($validator->fails()){
-            $request->session()->flash('error', 'Edit fail!');
-            return redirect()->back();
-        }else{
-            $brand = Brand::find($id);
-            $brand->name = $request->name;
-            $brand->category_id = $request->category_id;
-            $brand->description = $request->description;
-            $brand->content = $request['content'];
-            $brand->active = $request->active;
-
-            $brand->save();
-            $request->session()->flash('success', 'Edited Successfully');
-        }
+        $brand = Brand::find($id);
+        $brand->name = $request->name;
+        $brand->category_id = $request->category_id;
+        $brand->description = $request->description;
+        $brand->content = $request['content'];
+        $brand->active = $request->active;
+        $brand->save();
+        $request->session()->flash('success', 'Edited Successfully');
 
         return redirect('admin/brands');
     }
