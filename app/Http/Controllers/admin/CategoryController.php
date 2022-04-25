@@ -5,7 +5,10 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BrandRequest;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +22,7 @@ class CategoryController extends Controller
     public function index()
     {
         $category = Category::paginate(5);
-        return view('admin.category')->with(['categoryList'=> $category, 'title' => 'Category List']);
+        return view('admin.category')->with(['categoryList' => $category, 'title' => 'Category List']);
     }
 
     /**
@@ -38,17 +41,19 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CategoryRequest $request)
+    public function store(CreateCategoryRequest $request)
     {
-        $check = Category::where('name','=',$request->name)->first();
-        if($check)
-        {
-            $request->session()->flash('error', 'Category already exists');
-            return redirect()->back();
-        }else{
-            Category::create($request->all());
-            $request->session()->flash('success', 'Created Successfully ');
-        }
+        $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+            'folder' => 'shop'
+        ])->getSecurePath();
+
+        Category::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'image' => $uploadedFileUrl,
+            'active' => $request->active,
+        ]);
+        $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('/admin/category');
     }
@@ -84,15 +89,30 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(BrandRequest $request, $id)
+    public function update(UpdateCategoryRequest $request, $id)
     {
         $cate = Category::find($id);
-        $cate->name = $request->name;
-        $cate->description = $request->description;
-        $cate->content = $request['content'];
-        $cate->active = $request->active;
-        $cate->save();
-        $request->session()->flash('success', 'Edited Successfully');
+        if ($request->image == null) {
+            $url = $cate->image;
+
+            $cate->name = $request->name;
+            $cate->description = $request->description;
+            $cate->image = $url;
+            $cate->active = $request->active;
+            $cate->save();
+        } else {
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                'folder' => 'shop'
+            ])->getSecurePath();
+
+            $cate->name = $request->name;
+            $cate->description = $request->description;
+            $cate->image = $uploadedFileUrl;
+            $cate->active = $request->active;
+            $cate->save();
+        }
+
+        $request->session()->flash('success', __('messages.update.success'));
 
         return redirect("/admin/category");
     }
@@ -106,11 +126,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::find($id);
-
-        if(!$category)
-        {
-            Response('Category does not exist.', 404);
-        }
         $category->delete();
         return TRUE;
     }

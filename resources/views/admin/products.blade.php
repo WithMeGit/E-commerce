@@ -1,7 +1,7 @@
 @extends('admin.layouts.nav')
 @section('content')
     <a href="/admin/products/create" class="ml-6 px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out">
-        Create Brand
+        Create Product
     </a>
     <h1 class="flex justify-center font-medium leading-tight text-5xl mt-0 mb-2 text-blue-600">{{$title}}</h1>
     <div class="flex flex-col">
@@ -30,7 +30,10 @@
                                 Image
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                Price
+                                Promotion Price
+                            </th>
+                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                Original Price
                             </th>
                             <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                 Quantity
@@ -67,10 +70,13 @@
                                     {{$products->description}}
                             </td>
                             <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
-                                <img src="{{$products->image}}">
+                                <img class="rounded-lg" src="{{$products->image}}">
                             </td>
                             <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
-                                {{$products->price}}
+                                {{$products->promotion_price}}
+                            </td>
+                            <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
+                                {{$products->original_price}}
                             </td>
                             <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
                                 {{$products->quantity}}
@@ -99,12 +105,6 @@
         </div>
     </div>
     <div class="mb-96"></div>
-
-    @if (Session::has('error'))
-        <script>
-            toastr.error('{{ Session::get('error') }}');
-        </script>
-    @endif
     @if (Session::has('success'))
         <script>
             toastr.success('{{ Session::get('success') }}');

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\admin;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -11,31 +12,37 @@ use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view("admin.home");
     }
 
-    public function loginpage(){
+    public function loginpage()
+    {
         return view("admin.login");
     }
 
-    public function login(LoginRequest $request){
+    public function login(LoginRequest $request)
+    {
 
-        $loginData = User::where('email','=',$request->email)->first();
+        $loginData = User::where('email', '=', $request->email)->first();
 
-        if(!$loginData){
-            return redirect()->back()->with('fail','Email dose not exist');
-        }else{
-            if(Hash::check($request->password,$loginData->password)){
-                auth::login($loginData,true);
+        if (!$loginData) {
+            $request->session()->flash('fail', __('messages.fail.email'));
+            return redirect()->back();
+        } else {
+            if (Hash::check($request->password, $loginData->password)) {
+                auth::login($loginData, true);
                 return redirect('admin');
-            }else{
-                return redirect()->back()->with('fail', 'Incorrect password');
+            } else {
+                $request->session()->flash('fail', __('messages.fail.password'));
+                return redirect()->back();
             }
         }
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         Auth::logout();
 
         $request->session()->invalidate();
@@ -44,25 +51,18 @@ class AccountController extends Controller
         return redirect('admin/login');
     }
 
-    public function registerpage(){
+    public function registerpage()
+    {
         return view("admin.register");
     }
 
-    public function register(RegisterRequest $request){
+    public function register(RegisterRequest $request)
+    {
         $input = $request->all();
-
-        $request->validate([
-            'name' => 'required|max:55',
-            'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed',
-        ]);
-
         $input['role'] = 1;
-        $input['password'] = hash::make( $input['password']);
+        $input['password'] = hash::make($input['password']);
         $user = User::create($input);
         auth::login($user, true);
         return view('admin.home');
-
     }
-
 }

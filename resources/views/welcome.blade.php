@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tailwind Ecommerce</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-{{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 
@@ -27,8 +29,11 @@
                 <span class="absolute left-4 top-3 text-lg text-gray-400">
                     <i class="fas fa-search"></i>
                 </span>
-                <input type="text" class="pl-12 w-full border border-r-0 border-primary py-3 px-3 rounded-l-md focus:ring-primary focus:border-primary" placeholder="search">
-                <button type="submit" class="bg-primary border border-primary text-white px-8 font-medium rounded-r-md hover:bg-transparent hover:text-primary transition">
+                <input type="text"
+                    class="pl-12 w-full border border-r-0 border-primary py-3 px-3 rounded-l-md focus:ring-primary focus:border-primary"
+                    placeholder="search">
+                <button type="submit"
+                    class="bg-primary border border-primary text-white px-8 font-medium rounded-r-md hover:bg-transparent hover:text-primary transition">
                     Search
                 </button>
             </div>
@@ -37,14 +42,17 @@
             <!-- navicons -->
             <div class="space-x-4 flex items-center">
                 <a href="wishlist.html" class="block text-center text-gray-700 hover:text-primary transition relative">
-                    <span class="absolute -right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">5</span>
+                    <span
+                        class="absolute -right-0 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">5</span>
                     <div class="text-2xl">
                         <i class="far fa-heart"></i>
                     </div>
                     <div class="text-xs leading-3">Wish List</div>
                 </a>
-                <a href="cart.html" class="lg:block text-center text-gray-700 hover:text-primary transition hidden relative">
-                    <span class="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">3</span>
+                <a href="cart.html"
+                    class="lg:block text-center text-gray-700 hover:text-primary transition hidden relative">
+                    <span
+                        class="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">3</span>
                     <div class="text-2xl">
                         <i class="fas fa-shopping-bag"></i>
                     </div>
@@ -75,7 +83,8 @@
                     </span>
                     <span class="capitalize ml-2 text-white">All categories</span>
 
-                    <div class="absolute left-0 top-full w-full bg-white shadow-md py-3 invisible opacity-0 group-hover:opacity-100 group-hover:visible transition duration-300 z-50 divide-y divide-gray-300 divide-dashed">
+                    <div
+                        class="absolute left-0 top-full w-full bg-white shadow-md py-3 invisible opacity-0 group-hover:opacity-100 group-hover:visible transition duration-300 z-50 divide-y divide-gray-300 divide-dashed">
                         <!-- single category -->
                         <a href="#" class="px-6 py-3 flex items-center hover:bg-gray-100 transition">
                             <img src="images/icons/bed.svg" class="w-5 h-5 object-contain">
@@ -136,7 +145,8 @@
     <!-- navbar end -->
 
     <!-- mobile menubar -->
-    <div class="fixed w-full border-t border-gray-200 shadow-sm bg-white py-3 bottom-0 left-0 flex justify-around items-start px-6 lg:hidden z-40">
+    <div
+        class="fixed w-full border-t border-gray-200 shadow-sm bg-white py-3 bottom-0 left-0 flex justify-around items-start px-6 lg:hidden z-40">
         <a href="javascript:void(0)" class="block text-center text-gray-700 hover:text-primary transition relative">
             <div class="text-2xl" id="menuBar">
                 <i class="fas fa-bars"></i>
@@ -156,7 +166,8 @@
             <div class="text-xs leading-3">Search</div>
         </a>
         <a href="cart.html" class="text-center text-gray-700 hover:text-primary transition relative">
-            <span class="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">3</span>
+            <span
+                class="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">3</span>
             <div class="text-2xl">
                 <i class="fas fa-shopping-bag"></i>
             </div>
@@ -205,7 +216,8 @@
             </p>
             <!-- banner button -->
             <div class="mt-12">
-                <a href="shop.html" class="bg-primary border border-primary text-white px-8 py-3 font-medium rounded-md uppercase hover:bg-transparent
+                <a href="shop.html"
+                    class="bg-primary border border-primary text-white px-8 py-3 font-medium rounded-md uppercase hover:bg-transparent
                hover:text-primary transition">
                     Shop now
                 </a>
@@ -250,8 +262,7 @@
                     </div>
                 </div>
                 <div class="flex items-center mt-6">
-                    <input type="checkbox" id="agreement"
-                           class="text-primary focus:ring-0 rounded-sm cursor-pointer">
+                    <input type="checkbox" id="agreement" class="text-primary focus:ring-0 rounded-sm cursor-pointer">
                     <label for="agreement" class="text-gray-600 ml-3 cursor-pointer">
                         I have read and agree to the
                         <a href="#" class="text-primary">terms & conditions</a>
@@ -259,7 +270,7 @@
                 </div>
                 <div class="mt-4">
                     <button type="submit"
-                            class="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium">
+                        class="block w-full py-2 text-center text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium">
                         create account
                     </button>
                 </div>
@@ -273,11 +284,11 @@
             </div>
             <div class="mt-4 flex gap-4">
                 <a href="#"
-                   class="block w-1/2 py-2 text-center text-white bg-blue-800 rounded uppercase font-roboto font-medium text-sm">
+                    class="block w-1/2 py-2 text-center text-white bg-blue-800 rounded uppercase font-roboto font-medium text-sm">
                     Facebook
                 </a>
                 <a href="#"
-                   class="block w-1/2 py-2 text-center text-white bg-yellow-600 rounded uppercase font-roboto font-medium text-sm">
+                    class="block w-1/2 py-2 text-center text-white bg-yellow-600 rounded uppercase font-roboto font-medium text-sm">
                     Google
                 </a>
             </div>

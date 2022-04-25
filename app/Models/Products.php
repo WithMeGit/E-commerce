@@ -11,11 +11,21 @@ class Products extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
+        'promotion_price',
+        'original_price',
         'category_id',
         'brand_id',
         'quantity',
         'image',
         'active',
     ];
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function brand() {
+        return $this->belongsTo(Brand::class);
+    }
+
 }

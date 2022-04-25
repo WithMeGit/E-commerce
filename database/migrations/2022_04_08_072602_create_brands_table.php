@@ -18,7 +18,6 @@ class CreateBrandsTable extends Migration
             $table->string('name',255);
             $table->integer('category_id')->nullable();
             $table->text('description');
-            $table->longText('content')->nullable();
             $table->integer('active');
             $table->timestamps();
         });

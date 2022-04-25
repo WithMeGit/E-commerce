@@ -20,7 +20,8 @@ class CreateProductsTable extends Migration
             $table->string('name',255);
             $table->longText('description');
             $table->string('image');
-            $table->string('price');
+            $table->string('promotion_price');
+            $table->string('original_price');
             $table->string('quantity');
             $table->integer('active');
             $table->timestamps();
