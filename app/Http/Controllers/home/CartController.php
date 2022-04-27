@@ -28,12 +28,9 @@ class CartController extends Controller
                 $total += $cart->subTotal;
                 return $cart;
             });
-
-            $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
-            $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
         }
 
-        return view("app.carts")->with(['cartList' => $carts, 'total' => $total, 'cartCount' => $cartCount, 'wishlistCount' => $wishlistCount]);
+        return view("app.carts")->with(['cartList' => $carts, 'total' => $total]);
     }
 
     public function create(Request $request)
@@ -67,9 +64,14 @@ class CartController extends Controller
         if ($request->check_wishlist == true) {
             $wishlist = WishList::find($request->wishlist_id);
             $wishlist->delete();
-        }
 
-        return redirect('/carts');
+            $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
+            $request->session()->put('wishlistCount', $wishlistCount);
+        }
+        $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
+        $request->session()->put('cartCount', $cartCount);
+
+        return redirect()->back();
     }
 
     public function update(Request $request, $id)
@@ -81,10 +83,13 @@ class CartController extends Controller
         return $cart;
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $cart = Cart::find($id);
         $cart->delete();
+
+        $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
+        $request->session()->put('cartCount', $cartCount);
 
         return redirect('/carts');
     }

@@ -278,10 +278,14 @@
                                 class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
                                 <i class="fas fa-search"></i>
                             </a>
-                            <a href="#"
-                                class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
-                                <i class="far fa-heart"></i>
-                            </a>
+                            <form action="/wishlist" method="post">
+                                @csrf()
+                                <input type="hidden" name="product_id" value="{{ $products->id }}">
+                                <button type="submit"
+                                    class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <!-- product image end -->

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePaymentTable extends Migration
+class ChanegFieldOrderDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreatePaymentTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment', function (Blueprint $table) {
-            $table->id();
-            $table->string('method');
-            $table->string('status');
-            $table->timestamps();
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->dropColumn('cart_id');
         });
     }
 
@@ -28,6 +25,8 @@ class CreatePaymentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment');
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->integer('cart_id');
+        });
     }
 }

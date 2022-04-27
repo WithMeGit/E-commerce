@@ -21,19 +21,13 @@ class ProductController extends Controller
 
         $brand = Brand::withCount('products')->where('active', '=', 1)->get();
 
-        $cartCount = null;
-        if (Auth::user()) {
-            $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
-        }
-
-
-        return view("app.products")->with(['productList' => $products, 'categoryList' => $category, 'brandList' => $brand, 'cartCount' => $cartCount]);
+        return view("app.products")->with(['productList' => $products, 'categoryList' => $category, 'brandList' => $brand]);
     }
 
     public function show($name)
     {
-        $check_name_cate = Category::where('name', 'like', $name)->first();
-        $check_name_brand = Brand::where('name', 'like', $name)->first();
+        $check_name_cate = Category::where('name', '=', $name)->first();
+        $check_name_brand = Brand::where('name', '=', $name)->first();
 
         $category = Category::withCount('products')->where('active', '=', 1)->get();
 
@@ -57,6 +51,21 @@ class ProductController extends Controller
                 ->paginate(6);
 
             return view("app.products")->with(['productList' => $products, 'categoryList' => $category, 'brandList' => $brand]);
+        }
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $category = Category::withCount('products')->where('active', '=', 1)->get();
+
+        $brand = Brand::withCount('products')->where('active', '=', 1)->get();
+
+        $check_name_product = Products::where('name', 'like', "%{$request->search_name}%")->first();
+        if ($check_name_product) {
+            $products = Products::where('name', 'like', "%{$request->search_name}%")->paginate(6);
+            return view("app.products")->with(['productList' => $products, 'categoryList' => $category, 'brandList' => $brand]);
+        } else {
+            return view("app.products")->with(['namesearch' => $request->search_name, 'categoryList' => $category, 'brandList' => $brand]);
         }
     }
 }

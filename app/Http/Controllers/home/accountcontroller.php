@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
-class accountcontroller extends Controller
+class AccountController extends Controller
 {
-    public function index(){
-        return view("app.account");
+    public function index()
+    {
+        $category = Category::all()->where('active', '=', 1);
+        return view("app.account")->with(['categoryList' => $category]);
     }
 }

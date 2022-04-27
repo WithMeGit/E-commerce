@@ -134,7 +134,6 @@
                     </div>
                     <!-- single cart end -->
                 @endforeach
-
             </div>
             <!-- shipping carts end -->
         </div>

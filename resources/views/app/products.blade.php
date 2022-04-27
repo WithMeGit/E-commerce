@@ -190,113 +190,123 @@
         </div>
         <!-- sidebar end -->
 
-        <!-- products -->
-        <div class="col-span-3">
-            <!-- sorting -->
-            <div class="mb-4 flex items-center">
-                <button="showFilter=!showFilter"
-                    class="bg-primary border border-primary text-white px-10 py-3 font-medium rounded uppercase hover:bg-transparent hover:text-primary transition lg:hidden text-sm mr-3 focus:outline-none">
-                    Filter
-                    </button>
-                    <select
-                        class="w-44 text-sm text-gray-600 px-4 py-3 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary">
-                        <option>Default sorting</option>
-                        <option>Price low-high</option>
-                        <option>Price high-low</option>
-                        <option>Latest product</option>
-                    </select>
-                    <div class="flex gap-2 ml-auto">
-                        <div
-                            class="border border-primary w-10 h-9 flex items-center justify-center text-white bg-primary rounded cursor-pointer">
-                            <i class="fas fa-th"></i>
-                        </div>
-                        <div
-                            class="border border-gray-300 w-10 h-9 flex items-center justify-center text-gray-600 rounded cursor-pointer">
-                            <i class="fas fa-list"></i>
-                        </div>
-                    </div>
-            </div>
-            <!-- sorting end -->
-            <!-- product wrapper -->
-            <div class="grid lg:grid-cols-2 xl:grid-cols-3 sm:grid-cols-2 gap-6">
-                @foreach ($productList as $key => $products)
-                    <!-- single product -->
-                    <div class="group rounded bg-white shadow overflow-hidden">
-                        <!-- product image -->
-                        <div class="relative">
-                            <img src="{{ $products->image }}" class="w-full">
+        @if (isset($productList))
+            <!-- products -->
+            <div class="col-span-3">
+                <!-- sorting -->
+                <div class="mb-4 flex items-center">
+                    <button="showFilter=!showFilter"
+                        class="bg-primary border border-primary text-white px-10 py-3 font-medium rounded uppercase hover:bg-transparent hover:text-primary transition lg:hidden text-sm mr-3 focus:outline-none">
+                        Filter
+                        </button>
+                        <select
+                            class="w-44 text-sm text-gray-600 px-4 py-3 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary">
+                            <option>Default sorting</option>
+                            <option>Price low-high</option>
+                            <option>Price high-low</option>
+                            <option>Latest product</option>
+                        </select>
+                        <div class="flex gap-2 ml-auto">
                             <div
-                                class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition">
-                                <a href="/products/detail/{{ $products->id }}"
-                                    class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
-                                    <i class="fas fa-search"></i>
-                                </a>
-                                <form action="/wishlist" method="post">
-                                    @csrf()
-                                    <input type="hidden" name="product_id" value="{{ $products->id }}">
-                                    <button type="submit"
-                                        class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
-                                        <i class="far fa-heart"></i>
-                                    </button>
-                                </form>
+                                class="border border-primary w-10 h-9 flex items-center justify-center text-white bg-primary rounded cursor-pointer">
+                                <i class="fas fa-th"></i>
+                            </div>
+                            <div
+                                class="border border-gray-300 w-10 h-9 flex items-center justify-center text-gray-600 rounded cursor-pointer">
+                                <i class="fas fa-list"></i>
                             </div>
                         </div>
-                        <!-- product image end -->
-                        <!-- product content -->
-                        <div class="pt-4 pb-3 px-4">
-                            <a href="/products/detail/{{ $products->id }}">
-                                <h4 class="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
-                                    {{ $products->name }}
-                                </h4>
-                            </a>
-                            <div class="flex items-baseline mb-1 space-x-2">
-                                <p class="text-xl text-primary font-roboto font-semibold">
-                                    {{ $products->promotion_price }}
-                                    VNĐ</p>
-                                <p class="text-sm text-gray-400 font-roboto line-through">{{ $products->original_price }}
-                                    VNĐ</p>
+                </div>
+                <!-- sorting end -->
+                <!-- product wrapper -->
+                <div class="grid lg:grid-cols-2 xl:grid-cols-3 sm:grid-cols-2 gap-6">
+                    @foreach ($productList as $key => $products)
+                        <!-- single product -->
+                        <div class="group rounded bg-white shadow overflow-hidden">
+                            <!-- product image -->
+                            <div class="relative">
+                                <img src="{{ $products->image }}" class="w-full">
+                                <div
+                                    class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                                    <a href="/products/detail/{{ $products->id }}"
+                                        class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
+                                        <i class="fas fa-search"></i>
+                                    </a>
+                                    <form action="/wishlist" method="post">
+                                        @csrf()
+                                        <input type="hidden" name="product_id" value="{{ $products->id }}">
+                                        <button type="submit"
+                                            class="text-white text-lg w-9 h-9 rounded-full bg-primary hover:bg-gray-800 transition flex items-center justify-center">
+                                            <i class="far fa-heart"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="flex items-center">
-                                <div class="flex gap-1 text-sm text-yellow-400">
-                                    <span:key="n"><i class="fas fa-star"></i></span>
+                            <!-- product image end -->
+                            <!-- product content -->
+                            <div class="pt-4 pb-3 px-4">
+                                <a href="/products/detail/{{ $products->id }}">
+                                    <h4
+                                        class="uppercase font-medium text-xl mb-2 text-gray-800 hover:text-primary transition">
+                                        {{ $products->name }}
+                                    </h4>
+                                </a>
+                                <div class="flex items-baseline mb-1 space-x-2">
+                                    <p class="text-xl text-primary font-roboto font-semibold">
+                                        {{ $products->promotion_price }}
+                                        VNĐ</p>
+                                    <p class="text-sm text-gray-400 font-roboto line-through">
+                                        {{ $products->original_price }}
+                                        VNĐ</p>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="flex gap-1 text-sm text-yellow-400">
                                         <span:key="n"><i class="fas fa-star"></i></span>
                                             <span:key="n"><i class="fas fa-star"></i></span>
                                                 <span:key="n"><i class="fas fa-star"></i></span>
                                                     <span:key="n"><i class="fas fa-star"></i></span>
+                                                        <span:key="n"><i class="fas fa-star"></i></span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 ml-3">(150)</div>
                                 </div>
-                                <div class="text-xs text-gray-500 ml-3">(150)</div>
                             </div>
+                            <!-- product content end -->
+                            <!-- product button -->
+                            @if ($products->quantity <= 0)
+                                <a
+                                    class="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition cursor-not-allowed bg-opacity-8">
+                                    Hết Hàng</a>
+                            @else
+                                <form action="/carts" method="post">
+                                    @csrf()
+                                    <input type="hidden" name="product_id" value="{{ $products->id }}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <input type="hidden" name="size" value="40">
+                                    <input type="hidden" name="color" value="white">
+                                    <button type="submit"
+                                        class="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+                                        Add to Cart
+                                    </button>
+                                </form>
+                            @endif
+                            <!-- product button end -->
                         </div>
-                        <!-- product content end -->
-                        <!-- product button -->
-                        @if ($products->quantity <= 0)
-                            <a
-                                class="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition cursor-not-allowed bg-opacity-8">
-                                Hết Hàng</a>
-                        @else
-                            <form action="/carts" method="post">
-                                @csrf()
-                                <input type="hidden" name="product_id" value="{{ $products->id }}">
-                                <input type="hidden" name="quantity" value="1">
-                                <input type="hidden" name="size" value="40">
-                                <input type="hidden" name="color" value="white">
-                                <button type="submit"
-                                    class="block w-full py-1 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
-                                    Add to Cart
-                                </button>
-                            </form>
-                        @endif
-                        <!-- product button end -->
-                    </div>
-                    <!-- single product end -->
-                @endforeach
+                        <!-- single product end -->
+                    @endforeach
+                </div>
+                <!-- product wrapper end -->
+                <!-- products end -->
+                <div>
+                    {{ $productList->links() }}
+                </div>
             </div>
-            <!-- product wrapper end -->
-            <!-- products end -->
-            <div>
-                {{ $productList->links() }}
+            <!-- products -->
+        @else
+            <div class="col-span-3">
+                <div>khong cos san pham nao la {{ $namesearch }}</div>
             </div>
-        </div>
+        @endif
+
     </div>
     <!-- shop wrapper end -->
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Products;
 use App\Models\WishList;
 use Illuminate\Http\Request;
@@ -13,8 +14,7 @@ class WishListController extends Controller
 {
     public function index()
     {
-        $cartCount = null;
-        $wishlistCount = null;
+
 
         if (Auth::user()) {
             $wishlists = WishList::where('user_id', '=', Auth::user()->id)->get();
@@ -27,12 +27,10 @@ class WishListController extends Controller
                 $wishlist->priceProduct = $product->promotion_price;
                 return $wishlist;
             });
-
-            $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
-            $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
+            $category = Category::all()->where('active', '=', 1);
         }
 
-        return view("app.wishlist")->with(['wishlists' => $wishlists, 'cartCount' => $cartCount, 'wishlistCount' => $wishlistCount]);
+        return view("app.wishlist")->with(['wishlists' => $wishlists, 'categoryList' => $category]);
     }
 
     public function create(Request $request)
@@ -47,13 +45,18 @@ class WishListController extends Controller
             $wishlist->product_id = $request->product_id;
             $wishlist->save();
         }
-        return redirect('/wishlist');
+        $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
+        $request->session()->put('wishlistCount', $wishlistCount);
+        return redirect()->back();
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $wishlist = WishList::find($id);
         $wishlist->delete();
+
+        $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
+        $request->session()->put('wishlistCount', $wishlistCount);
         return redirect('/wishlist');
     }
 }

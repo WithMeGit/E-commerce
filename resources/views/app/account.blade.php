@@ -18,11 +18,15 @@
             <div class="px-4 py-3 shadow flex items-center gap-4">
                 <div class="flex-shrink-0">
                     <img src="https://res.cloudinary.com/carternguyen/image/upload/v1650472727/shop/logo_user_feipcw.svg"
-                         class="rounded-full w-14 h-14 p-1 border border-gray-200 object-cover">
+                        class="rounded-full w-14 h-14 p-1 border border-gray-200 object-cover">
                 </div>
                 <div>
                     <p class="text-gray-600">Hello,</p>
-                    <h4 class="text-gray-800 capitalize font-medium">Russell Ahmed</h4>
+                    <h4 class="text-gray-800 capitalize font-medium">
+                        @if (Auth::user())
+                            {{ Auth::user()->name }}
+                        @endif
+                    </h4>
                 </div>
             </div>
             <!-- account profile end -->
@@ -32,46 +36,24 @@
                 <!-- single link -->
                 <div class="space-y-1 pl-8">
                     <a href="account.html"
-                       class="relative text-base font-medium capitalize hover:text-primary transition block text-primary">
+                        class="relative text-base font-medium capitalize hover:text-primary transition block text-primary">
                         Manage account
                         <span class="absolute -left-8 top-0 text-base">
                             <i class="far fa-address-card"></i>
                         </span>
                     </a>
-                    <a href="profile-info.html" class="hover:text-primary transition capitalize block">Profile information</a>
+                    <a href="profile-info.html" class="hover:text-primary transition capitalize block">Profile
+                        information</a>
                     <a href="manage-address.html" class="hover:text-primary transition capitalize block">Manage address</a>
-                    <a href="change-password.html" class="hover:text-primary transition capitalize block">change password</a>
+                    <a href="change-password.html" class="hover:text-primary transition capitalize block">change
+                        password</a>
                 </div>
                 <!-- single link end -->
-                <!-- single link -->
-                <div class="space-y-1 pl-8 pt-4">
-                    <a href="#"
-                       class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block">
-                        My order history
-                        <span class="absolute -left-8 top-0 text-base">
-                            <i class="fas fa-gift"></i>
-                        </span>
-                    </a>
-                    <a href="#" class="hover:text-primary transition block capitalize">my returns</a>
-                    <a href="#" class="hover:text-primary transition block capitalize">my cancellations</a>
-                    <a href="#" class="hover:text-primary transition block capitalize">my reviews</a>
-                </div>
-                <!-- single link end -->
-                <!-- single link -->
-                <div class="space-y-1 pl-8 pt-4">
-                    <a href="#"
-                       class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block">
-                        Payment methods
-                        <span class="absolute -left-8 top-0 text-base">
-                            <i class="far fa-credit-card"></i>
-                        </span>
-                    </a>
-                    <a href="#" class="hover:text-primary transition block capitalize">Voucher</a>
-                </div>
-                <!-- single link end -->
+
                 <!-- single link -->
                 <div class="pl-8 pt-4">
-                    <a href="wishlist.html" class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block">
+                    <a href="/wishlist"
+                        class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block">
                         my wishlist
                         <span class="absolute -left-8 top-0 text-base">
                             <i class="far fa-heart"></i>
@@ -81,14 +63,20 @@
                 <!-- single link end -->
                 <!-- single link -->
                 <div class="pl-8 pt-4">
-                    <a href="#"
-                       class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block">
+                    <a class="relative medium capitalize text-gray-800 font-medium hover:text-primary transition block"
+                        href="{{ route('logout') }}"
+                        onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                         logout
                         <span class="absolute -left-8 top-0 text-base">
                             <i class="fas fa-sign-out-alt"></i>
                         </span>
                     </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                        <input type="hidden" name="redirect" value="/">
+                        @csrf()
+                    </form>
                 </div>
+
                 <!-- single link end -->
             </div>
             <!-- profile links end -->
@@ -98,15 +86,14 @@
         <!-- account content -->
         <div class="col-span-9 grid md:grid-cols-3 gap-4 mt-6 lg:mt-0">
             <!-- single card -->
-            <div class="shadow rounded bg-white px-4 pt-6 pb-8">
+            <div class="shadow rounded bg-white px-2 pt-6 pb-8">
                 <div class="flex justify-between items center mb-4">
                     <h3 class="font-medium capitalize text-gray-800 text-lg">personal profile</h3>
                     <a href="#" class="text-primary">Edit</a>
                 </div>
                 <div class="space-y-1">
-                    <h4 class="text-gray-700 font-medium">Russell Ahmed</h4>
-                    <p class="text-gray-800">example@mail.com</p>
-                    <p class="text-gray-800">(123) 456-789</p>
+                    <h4 class="text-gray-700 font-medium">{{ Auth::user()->name }}</h4>
+                    <p class="text-gray-800">{{ Auth::user()->email }}</p>
                 </div>
             </div>
             <!-- single card end -->
@@ -124,20 +111,7 @@
                 </div>
             </div>
             <!-- single card end -->
-            <!-- single card -->
-            <div class="shadow rounded bg-white px-4 pt-6 pb-8">
-                <div class="flex justify-between items center mb-4">
-                    <h3 class="font-medium capitalize text-gray-800 text-lg">Billing Address</h3>
-                    <a href="#" class="text-primary">Edit</a>
-                </div>
-                <div class="space-y-1">
-                    <h4 class="text-gray-700 font-medium">Russell Ahmed</h4>
-                    <p class="text-gray-800">3891 Ranchview Dr.</p>
-                    <p class="text-gray-800">Richardson, Califora</p>
-                    <p class="text-gray-800">(123) 456-789</p>
-                </div>
-            </div>
-            <!-- single card end -->
+
         </div>
         <!-- account content end -->
     </div>

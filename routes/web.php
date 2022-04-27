@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,12 +18,20 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', [\App\Http\Controllers\home\homeController::class, 'index']);
+Route::post('/home', [\App\Http\Controllers\home\homeController::class, 'searchAutocomplete']);
 Route::get('/home', [\App\Http\Controllers\home\homeController::class, 'index']);
 Route::get('/products', [\App\Http\Controllers\home\ProductController::class, 'index']);
 Route::get('/products/{name}', [\App\Http\Controllers\home\ProductController::class, 'show']);
+Route::post('/products', [\App\Http\Controllers\home\ProductController::class, 'searchProduct']);
 Route::get('/products/detail/{id}', [\App\Http\Controllers\home\ProductDetailController::class, 'index']);
 Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', [\App\Http\Controllers\home\checkoutcontroller::class, 'index']);
+    Route::get('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'index']);
+    Route::post('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'placeOrder']);
+    Route::get('/order-complete', function () {
+        $category = Category::all()->where('active', '=', 1);
+        return view("app.order-complete")->with(['categoryList' => $category]);
+    });
+    Route::get('order/detail/{id}', [\App\Http\Controllers\home\OrderController::class, 'orderdetail']);
 
     //carts
     Route::get('/carts', [\App\Http\Controllers\home\CartController::class, 'index']);
@@ -31,8 +40,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'destroy']);
 
     //
-    Route::get('/orders', [\App\Http\Controllers\home\ordercontroller::class, 'index']);
-    Route::get('/accounts', [\App\Http\Controllers\home\accountcontroller::class, 'index']);
+    Route::get('/orders', [\App\Http\Controllers\home\OrderController::class, 'index']);
+    Route::get('/accounts', [\App\Http\Controllers\home\AccountController::class, 'index']);
 
     //wishlist
     Route::get('/wishlist', [\App\Http\Controllers\home\WishListController::class, 'index']);
