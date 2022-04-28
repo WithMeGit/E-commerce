@@ -3,6 +3,12 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\Payment;
+use App\Models\Products;
+use App\Models\Shipping;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -15,6 +21,31 @@ class OrderController extends Controller
     public function index()
     {
         //
+        $orders = Order::join('users', 'orders.user_id', '=', 'users.id')->select('orders.*', 'users.name')->orderBy('orders.id', 'ASC')->paginate(5);
+        $users = User::all();
+        return view("admin.order")->with(['orderList' => $orders, 'users' => $users,  'title' => 'List Order']);
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        $order = Order::find($id);
+        $order->order_status = $request->value;
+        $order->save();
+        if ($request->ok) {
+            $orders = OrderDetail::join('orders', 'orders.id', '=', 'order_details.order_id')
+                ->select('orders.*', 'order_details.*')->where('orders.id', '=', $id)
+                ->get();
+            $products = Products::all();
+            foreach ($orders as $key => $order) {
+                foreach ($products as $key => $product) {
+                    if ($order->product_id == $product->id) {
+                        $product->quantity = $product->quantity - $order->product_quantity;
+                        $product->save();
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**

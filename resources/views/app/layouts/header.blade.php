@@ -88,7 +88,7 @@
                             class="lg:block text-center text-gray-700 hover:text-primary transition hidden relative">
                             <div class="text-2xl">
                                 <span
-                                    class="absolute -right-3 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
+                                    class="absolute -right-2 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs">
                                     {{ Session::get('orderCount') }}</span>
                                 <i class="fas fa-shipping-fast"></i>
                             </div>

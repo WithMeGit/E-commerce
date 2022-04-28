@@ -19,66 +19,159 @@
                 <h3 class="text-lg font-medium capitalize mb-4">
                     checkout
                 </h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-gray-600 mb-2 block">
-                            Full Name <span class="text-primary">*</span>
-                        </label>
-                        <input type="text" class="input-box" name="name" required>
-                    </div>
-                    <div>
-                        <label class="text-gray-600 mb-2 block">
-                            Street Address <span class="text-primary">*</span>
-                        </label>
-                        <input type="text" class="input-box" name="address" required>
-                    </div>
-                    <div>
-                        <label class="text-gray-600 mb-2 block">
-                            Phone Number <span class="text-primary">*</span>
-                        </label>
-                        <input type="phone" class="input-box" name="phone" required>
-                    </div>
-                    <div>
-                        <label class="text-gray-600 mb-2 block">
-                            Email Address <span class="text-primary">*</span>
-                        </label>
-                        <input type="text" class="input-box" name="email" required>
-                    </div>
-                    <div>
-                        <div class="mb-3 xl:w-96">
-                            <select name="type"
-                                class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                aria-label="Default select example">
-                                <option value="ship tận nhà" selected>ship tận nhà</option>
-                                <option value="ship tới địa chỉ khác">ship tới địa chỉ khác</option>
-                                <option value="ship hàng thu tiền hộ">ship hàng thu tiền hộ</option>
-                            </select>
+                @if (isset($shipping))
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Full Name <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="name" value="{{ $shipping->name }}" required>
                         </div>
-                    </div>
-                    <div>
-                        <div class="mb-3 xl:w-96">
-                            <select name="method"
-                                class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                aria-label="Default select example">
-                                <option value="thanh toán khi nhận hàng" selected>thanh toán khi nhận hàng</option>
-                                <option value="chuyển khoản">chuyển khoản</option>
-                            </select>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Street Address <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="address" value="{{ $shipping->address }}"
+                                required>
                         </div>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Phone Number <span class="text-primary">*</span>
+                            </label>
+                            <input type="phone" class="input-box" name="phone" value="{{ $shipping->phone }}"
+                                required>
+                        </div>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Email Address <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="email" value="{{ $shipping->email }}"
+                                required>
+                        </div>
+                        <div>
+                            <div class="mb-3 xl:w-96">
+                                <select name="type"
+                                    class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                    aria-label="Default select example">
+                                    <option value="ship tận nhà"
+                                        {{ $shipping->type == 'ship tận nhà' ? 'selected' : '' }}>
+                                        ship tận nhà</option>
+                                    <option value="ship tận nhà"
+                                        {{ $shipping->type == 'ship tới địa chỉ khác' ? 'selected' : '' }}>
+                                        ship tới địa chỉ khác</option>
+                                    <option value="ship tận nhà"
+                                        {{ $shipping->type == 'ship hàng thu tiền hộ' ? 'selected' : '' }}>
+                                        ship hàng thu tiền hộ</option>
+                                </select>
+                            </div>
+                        </div>
+                        @if (isset($payment))
+                            <div>
+                                <div class="mb-3 xl:w-96">
+                                    <select name="method"
+                                        class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        aria-label="Default select example">
+                                        <option value="thanh toán khi nhận hàng"
+                                            {{ $payment->method == 'thanh toán khi nhận hàng' ? 'selected' : '' }}>thanh
+                                            toán
+                                            khi nhận hàng</option>
+                                        <option value="chuyển khoản"
+                                            {{ $payment->method == 'chuyển khoản' ? 'selected' : '' }}>chuyển khoản
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        @else
+                            <div>
+                                <div class="mb-3 xl:w-96">
+                                    <select name="method"
+                                        class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        aria-label="Default select example">
+                                        <option value="thanh toán khi nhận hàng" selected>thanh toán khi nhận hàng</option>
+                                        <option value="chuyển khoản">chuyển khoản</option>
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="mb-3 xl:w-96">
+                            <label for="exampleFormControlTextarea1"
+                                class="form-label inline-block mb-2 text-gray-700">Shipping
+                                Order</label>
+                            <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                id="exampleFormControlTextarea1" rows="9"
+                                placeholder="Notes about your order, Special Notes for Delivery">{{ $shipping->note }}</textarea>
+                        </div>
+                        <!-- checkout -->
+                        <button type="submit"
+                            class="bg-primary border border-primary text-white px-4 py-3 font-medium rounded-md uppercase hover:bg-transparent hover:text-primary transition text-sm w-full block text-center">
+                            Place order
+                        </button>
+                        <!-- checkout end -->
                     </div>
-                    <div class="mb-3 xl:w-96">
-                        <label for="exampleFormControlTextarea1" class="form-label inline-block mb-2 text-gray-700">Shipping
-                            Order</label>
-                        <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                            id="exampleFormControlTextarea1" rows="9"
-                            placeholder="Notes about your order, Special Notes for Delivery"></textarea>
+                @else
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Full Name <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="name" required>
+                        </div>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Street Address <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="address" required>
+                        </div>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Phone Number <span class="text-primary">*</span>
+                            </label>
+                            <input type="phone" class="input-box" name="phone" required>
+                        </div>
+                        <div>
+                            <label class="text-gray-600 mb-2 block">
+                                Email Address <span class="text-primary">*</span>
+                            </label>
+                            <input type="text" class="input-box" name="email" required>
+                        </div>
+                        <div>
+                            <div class="mb-3 xl:w-96">
+                                <select name="type"
+                                    class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                    aria-label="Default select example">
+                                    <option value="ship tận nhà" selected>ship tận nhà</option>
+                                    <option value="ship tới địa chỉ khác">ship tới địa chỉ khác</option>
+                                    <option value="ship hàng thu tiền hộ">ship hàng thu tiền hộ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mb-3 xl:w-96">
+                                <select name="method"
+                                    class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                    aria-label="Default select example">
+                                    <option value="thanh toán khi nhận hàng" selected>thanh toán khi nhận hàng</option>
+                                    <option value="chuyển khoản">chuyển khoản</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 xl:w-96">
+                            <label for="exampleFormControlTextarea1"
+                                class="form-label inline-block mb-2 text-gray-700">Shipping
+                                Order</label>
+                            <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                id="exampleFormControlTextarea1" rows="9"
+                                placeholder="Notes about your order, Special Notes for Delivery"></textarea>
+                        </div>
+                        <!-- checkout -->
+                        <button type="submit"
+                            class="bg-primary border border-primary text-white px-4 py-3 font-medium rounded-md uppercase hover:bg-transparent hover:text-primary transition text-sm w-full block text-center">
+                            Place order
+                        </button>
+                        <!-- checkout end -->
                     </div>
-                    <!-- checkout -->
-                    <button type="submit"
-                        class="bg-primary border border-primary text-white px-4 py-3 font-medium rounded-md uppercase hover:bg-transparent hover:text-primary transition text-sm w-full block text-center">
-                        Place order
-                    </button>
-                    <!-- checkout end -->
-                </div>
+                @endif
             </form>
         </div>
         <!-- checkout form end -->

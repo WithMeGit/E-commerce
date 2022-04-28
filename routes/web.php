@@ -42,6 +42,12 @@ Route::middleware(['auth'])->group(function () {
     //
     Route::get('/orders', [\App\Http\Controllers\home\OrderController::class, 'index']);
     Route::get('/accounts', [\App\Http\Controllers\home\AccountController::class, 'index']);
+    Route::get('/accounts/manage-address', [\App\Http\Controllers\home\AccountController::class, 'showManageAddress']);
+    Route::post('/accounts/manage-address', [\App\Http\Controllers\home\AccountController::class, 'updateManageAddress']);
+    Route::get('/accounts/profile', [\App\Http\Controllers\home\AccountController::class, 'showProfile']);
+    Route::post('/accounts/profile', [\App\Http\Controllers\home\AccountController::class, 'updateProfile']);
+    Route::get('/accounts/change-password', [\App\Http\Controllers\home\AccountController::class, 'showChangePassword']);
+    Route::post('/accounts/change-password', [\App\Http\Controllers\home\AccountController::class, 'updateChangePassword']);
 
     //wishlist
     Route::get('/wishlist', [\App\Http\Controllers\home\WishListController::class, 'index']);
@@ -64,6 +70,7 @@ Route::middleware(['admin'])->group(function () {
 
     //oder
     Route::resource('admin/orders', \App\Http\Controllers\admin\OrderController::class);
+    Route::post('admin/orders/{id}', [\App\Http\Controllers\admin\OrderController::class, 'updateOrder']);
 
     //cart
     Route::resource('admin/carts', \App\Http\Controllers\admin\CartController::class);

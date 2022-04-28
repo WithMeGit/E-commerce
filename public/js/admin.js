@@ -49,4 +49,18 @@ function deleteItem(url) {
     });
 }
 
+function shipping(value, ok, url) {
+    $.ajax({
+        type: "POST",
+        dataType: "JSON",
+        data: { value, ok },
+        url: url,
+        success: function (res) {
+            if (res === 1) {
+                location.reload();
+            }
+        },
+    });
+}
+
 $(document).ready(function () {});

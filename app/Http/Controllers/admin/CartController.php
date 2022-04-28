@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Products;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -12,9 +15,11 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        $carts = Cart::paginate(5);
+        $users = User::all();
+        return view("admin.cart")->with(['cartList' => $carts, 'userList' => $users, 'title' => 'Cart List']);
     }
 
     /**

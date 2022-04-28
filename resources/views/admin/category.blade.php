@@ -13,9 +13,6 @@
                         <thead class="border-b">
                             <tr>
                                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                    Id
-                                </th>
-                                <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                     Name
                                 </th>
                                 <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
@@ -38,8 +35,6 @@
                         <tbody>
                             @foreach ($categoryList as $key => $category)
                                 <tr class="border-b">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        {{ $category->id }}</td>
                                     <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
                                         {{ $category->name }}
                                     </td>
