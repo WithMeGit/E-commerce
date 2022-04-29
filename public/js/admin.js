@@ -61,6 +61,16 @@ function shipping(value, ok, url) {
             }
         },
     });
+
+    // $.ajax({
+    //     method: "GET",
+    //     url: "/pusher",
+    //     data: { message: value },
+    // });
+}
+
+function viewOrder(url) {
+    window.location.href = url;
 }
 
 $(document).ready(function () {});

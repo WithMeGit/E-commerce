@@ -72,6 +72,11 @@ Route::middleware(['admin'])->group(function () {
     Route::resource('admin/orders', \App\Http\Controllers\admin\OrderController::class);
     Route::post('admin/orders/{id}', [\App\Http\Controllers\admin\OrderController::class, 'updateOrder']);
 
+    //pusher
+    Route::get('/pusher', function (Illuminate\Http\Request $request) {
+        event(new App\Events\NotificationPusherEvent($request));
+    });
+
     //cart
     Route::resource('admin/carts', \App\Http\Controllers\admin\CartController::class);
 

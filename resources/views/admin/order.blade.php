@@ -34,21 +34,22 @@
                                     </td>
                                     <td>
                                         @if ($order->order_status === 'Đang chờ xử lý')
-                                            <button onclick="shipping('Vận chuyển','','/admin/orders/{{ $order->id }}')"
+                                            <button
+                                                onclick="shipping('đang vận chuyển','','/admin/orders/{{ $order->id }}')"
                                                 class="inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out">Vận
                                                 chuyển</button>
                                         @endif
-                                        @if ($order->order_status === 'Vận chuyển')
-                                            <button onclick="shipping('Đã giao','Ok','/admin/orders/{{ $order->id }}')"
+                                        @if ($order->order_status === 'đang vận chuyển')
+                                            <button onclick="shipping('đã giao','Ok','/admin/orders/{{ $order->id }}')"
                                                 class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">Đã
                                                 giao hoàn tất</button>
                                         @endif
-                                        <button
+                                        <button onclick="viewOrder('/admin/orders/{{ $order->id }}')"
                                             class="px-6 py-2.5 bg-green-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-500 hover:shadow-lg focus:bg-green-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-600 active:shadow-lg transition duration-150 ease-in-out"><i
                                                 class="fas fa-eye fa-xs"></i></button>
-                                        <button
+                                        {{-- <button
                                             class="px-6 py-2.5 bg-red-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out "><i
-                                                class="fas fa-trash fa-xs"></i></button>
+                                                class="fas fa-trash fa-xs"></i></button> --}}
                                     </td>
                                 </tr>
                             @endforeach

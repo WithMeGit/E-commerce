@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
 </head>
 
@@ -95,6 +96,29 @@
                             <div class="text-xs leading-3">Order</div>
                         </a>
                     @endif
+                    @if (Auth::user())
+                        <a class="lg:block text-center text-gray-700 hover:text-primary transition hidden relative"
+                            onclick="count()" id="dropdownNotification" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="text-2xl">
+                                <span id="countNotification" data-count="0">
+                                </span>
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="text-xs leading-3">Notifi</div>
+                        </a>
+                    @endif
+                    <ul id="Notifications"
+                        class="dropdown-menu min-w-max absolute hiddenbg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-gray-50 border-none"
+                        aria-labelledby="dropdownNotification">
+                        <li>
+                            <a class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100"
+                                href="/">Một sản phẩm mới được thêm vào shop</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100"
+                                href="/orders">Đơn hàng của bạn đang vận chuyện</a>
+                        </li>
+                    </ul>
                     <a href="/accounts" class="block text-center text-gray-700 hover:text-primary transition">
                         <div class="text-2xl">
                             <i class="far fa-user"></i>
@@ -366,3 +390,5 @@
         </div>
     </div>
 </body>
+
+</html>

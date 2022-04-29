@@ -10,6 +10,7 @@ use App\Models\Products;
 use App\Models\Shipping;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -21,7 +22,10 @@ class OrderController extends Controller
     public function index()
     {
         //
-        $orders = Order::join('users', 'orders.user_id', '=', 'users.id')->select('orders.*', 'users.name')->orderBy('orders.id', 'ASC')->paginate(5);
+        $orders = Order::join('users', 'orders.user_id', '=', 'users.id')
+            ->select('orders.*', 'users.name')
+            ->orderBy('orders.id', 'ASC')
+            ->paginate(5);
         $users = User::all();
         return view("admin.order")->with(['orderList' => $orders, 'users' => $users,  'title' => 'List Order']);
     }
@@ -33,7 +37,8 @@ class OrderController extends Controller
         $order->save();
         if ($request->ok) {
             $orders = OrderDetail::join('orders', 'orders.id', '=', 'order_details.order_id')
-                ->select('orders.*', 'order_details.*')->where('orders.id', '=', $id)
+                ->select('orders.*', 'order_details.*')
+                ->where('orders.id', '=', $id)
                 ->get();
             $products = Products::all();
             foreach ($orders as $key => $order) {
@@ -77,7 +82,17 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = Order::join('shippings', 'orders.shipping_id', '=', 'shippings.id')->where('orders.id', '=', $id)->get();
+        $listOrderdetail = Order::join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->select('order_details.*', DB::raw('order_details.product_price * order_details.product_quantity as total'))
+            ->where('orders.id', '=', $id)
+            ->orderBy('orders.id', 'ASC')
+            ->get();
+
+        return view("admin.view-order")->with([
+            'listorderdetails' => $listOrderdetail,
+            'orders' => $order
+        ]);
     }
 
     /**
