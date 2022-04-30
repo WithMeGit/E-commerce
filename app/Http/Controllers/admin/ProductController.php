@@ -5,9 +5,11 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Jobs\JobSendEmailNotification;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Products;
+use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
@@ -69,6 +71,15 @@ class ProductController extends Controller
             'active' => $request->active,
         ]);
         $request->session()->flash('success', __('messages.create.success'));
+
+        $userList = User::where('role', '=', 0)->get();
+
+        foreach ($userList as $key => $user) {
+
+            JobSendEmailNotification::dispatch($user->email);
+        }
+
+
 
         return redirect('admin/products');
     }
