@@ -81,22 +81,22 @@ function addtowishlist(id) {
 
 function count() {
     var countNotification = document.getElementById("countNotification");
-    //  var countNotificationElem = countNotification.find("a[data-count]");
+
     let count = parseInt(countNotification.getAttribute("data-count"));
     count++;
     countNotification.setAttribute("data-count", count);
-    console.log(count);
+
     countNotification.className +=
         "absolute -right-1 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs";
 
-    countNotification.textContent = count + 1;
+    countNotification.textContent = count;
     var Notifications = document.getElementById("Notifications");
 
     var li = document.createElement("li");
     var a = document.createElement("a");
     a.className +=
         "dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100";
-    a.appendChild(document.createTextNode(`Đơn hàng của bạn đang đã giao`));
+    a.appendChild(document.createTextNode(`Đơn hàng của bạn + data `));
     li.appendChild(a);
     Notifications.appendChild(li);
 }
@@ -127,4 +127,39 @@ var pusher = new Pusher("2d3f727a5410fc8aebf6", {
 });
 
 var channel = pusher.subscribe("notification");
-channel.bind("App\\Events\\NotificationPusherEvent", function (data) {});
+channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
+    $.ajax({
+        method: "POST",
+        dataType: "JSON",
+        data: { user_id: data.user_id },
+        url: "/checkorder",
+        success: function (res) {
+            if (res === 1) {
+                var countNotification =
+                    document.getElementById("countNotification");
+
+                let count = parseInt(
+                    countNotification.getAttribute("data-count")
+                );
+                count++;
+                countNotification.setAttribute("data-count", count);
+
+                countNotification.className +=
+                    "absolute -right-1 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs";
+
+                countNotification.textContent = count;
+                var Notifications = document.getElementById("Notifications");
+
+                var li = document.createElement("li");
+                var a = document.createElement("a");
+                a.className +=
+                    "dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100";
+                a.appendChild(
+                    document.createTextNode(`Đơn hàng của bạn ${data.message}`)
+                );
+                li.appendChild(a);
+                Notifications.appendChild(li);
+            }
+        },
+    });
+});

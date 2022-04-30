@@ -19,6 +19,7 @@ Auth::routes();
 
 Route::get('/', [\App\Http\Controllers\home\homeController::class, 'index']);
 Route::post('/home', [\App\Http\Controllers\home\homeController::class, 'searchAutocomplete']);
+Route::post('/checkorder', [\App\Http\Controllers\home\homeController::class, 'checkOrder']);
 Route::get('/home', [\App\Http\Controllers\home\homeController::class, 'index']);
 Route::get('/products', [\App\Http\Controllers\home\ProductController::class, 'index']);
 Route::get('/products/{name}', [\App\Http\Controllers\home\ProductController::class, 'show']);
@@ -27,6 +28,7 @@ Route::get('/products/detail/{id}', [\App\Http\Controllers\home\ProductDetailCon
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'index']);
     Route::post('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'placeOrder']);
+
     Route::get('/order-complete', function () {
         $category = Category::all()->where('active', '=', 1);
         return view("app.order-complete")->with(['categoryList' => $category]);
@@ -72,10 +74,10 @@ Route::middleware(['admin'])->group(function () {
     Route::resource('admin/orders', \App\Http\Controllers\admin\OrderController::class);
     Route::post('admin/orders/{id}', [\App\Http\Controllers\admin\OrderController::class, 'updateOrder']);
 
-    //pusher
-    Route::get('/pusher', function (Illuminate\Http\Request $request) {
-        event(new App\Events\NotificationPusherEvent($request));
-    });
+    // //pusher
+    // Route::get('/pusher', function (Illuminate\Http\Request $request) {
+    //     event(new App\Events\NotificationPusherEvent($request));
+    // });
 
     //cart
     Route::resource('admin/carts', \App\Http\Controllers\admin\CartController::class);

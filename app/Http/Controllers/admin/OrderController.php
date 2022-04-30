@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Events\NotificationPusherEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -50,6 +51,7 @@ class OrderController extends Controller
                 }
             }
         }
+        event(new NotificationPusherEvent($request->value, $order->user_id));
         return true;
     }
 

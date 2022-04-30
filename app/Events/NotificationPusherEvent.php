@@ -17,15 +17,17 @@ class NotificationPusherEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $message;
+    public $user_id;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct($message, $user_id)
     {
-        $this->message = $request->message;
+        $this->message = $message;
+        $this->user_id = $user_id;
     }
 
     /**

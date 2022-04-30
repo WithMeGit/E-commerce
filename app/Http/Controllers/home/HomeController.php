@@ -46,4 +46,14 @@ class HomeController extends Controller
 
         echo $output;
     }
+
+    public function checkOrder(Request $request)
+    {
+        if (Auth::user()) {
+            if ($request->user_id == Auth::user()->id) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
