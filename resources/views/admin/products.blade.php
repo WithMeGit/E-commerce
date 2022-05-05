@@ -97,7 +97,7 @@
                     </table>
                 </div>
                 <div class="flex justify-center mt-4">
-                    {{ $productlist->links() }}
+                    {{ $productlist->links('admin.paginate') }}
                 </div>
             </div>
         </div>

@@ -30,17 +30,24 @@
                                         {{ number_format($order->order_total) }} VNĐ
                                     </td>
                                     <td class="text-sm text-gray-900 font-mono px-6 py-4 whitespace-nowrap">
-                                        {{ $order->order_status }}
+                                        @if ($order->order_status == 100)
+                                            Đang chờ xử lý
+                                        @else
+                                            @if ($order->order_status == 200)
+                                                Vận chuyển
+                                            @else
+                                                Đã giao
+                                            @endif
+                                        @endif
                                     </td>
                                     <td>
-                                        @if ($order->order_status === 'Đang chờ xử lý')
-                                            <button
-                                                onclick="shipping('đang vận chuyển','','/admin/orders/{{ $order->id }}')"
+                                        @if ($order->order_status == 100)
+                                            <button onclick="shipping('200','','/admin/orders/{{ $order->id }}')"
                                                 class="inline-block px-6 py-2.5 bg-yellow-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-yellow-600 hover:shadow-lg focus:bg-yellow-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-yellow-700 active:shadow-lg transition duration-150 ease-in-out">Vận
                                                 chuyển</button>
                                         @endif
-                                        @if ($order->order_status === 'đang vận chuyển')
-                                            <button onclick="shipping('đã giao','Ok','/admin/orders/{{ $order->id }}')"
+                                        @if ($order->order_status == 200)
+                                            <button onclick="shipping('300','Ok','/admin/orders/{{ $order->id }}')"
                                                 class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out">Đã
                                                 giao hoàn tất</button>
                                         @endif
@@ -57,7 +64,7 @@
                     </table>
                 </div>
                 <div class="flex justify-center mt-4">
-                    {{ $orderList->links() }}
+                    {{ $orderList->links('admin.paginate') }}
                 </div>
             </div>
         </div>

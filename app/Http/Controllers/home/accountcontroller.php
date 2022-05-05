@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\home;
 
+use App\Constants\ShippingTypeContant;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ManageAddressRequest;
 use App\Http\Requests\UpdateChangePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Category;
 use App\Models\Shipping;
 use App\Models\User;
 use App\Models\UserDetail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -38,7 +40,7 @@ class AccountController extends Controller
         return view("app.manage-address")->with(['categoryList' => $category]);
     }
 
-    public function updateManageAddress(Request $request)
+    public function updateManageAddress(ManageAddressRequest $request)
     {
         $shipping = Shipping::where('user_id', '=', Auth::user()->id)->first();
         if ($shipping) {
@@ -55,7 +57,7 @@ class AccountController extends Controller
                 'address' => $request->address,
                 'phone' => $request->phone,
                 'email' => $request->email,
-                'type' => " ship tận nhà",
+                'type' => ShippingTypeContant::HOME_DELIVERY,
             ]);
         }
 
@@ -73,7 +75,7 @@ class AccountController extends Controller
         return view("app.profile");
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateProfileRequest $request)
     {
         $user = User::where('id', '=', Auth::user()->id)->first();
         $userdetail = UserDetail::where('user_id', '=', Auth::user()->id)->first();

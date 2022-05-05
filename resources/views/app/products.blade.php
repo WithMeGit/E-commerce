@@ -296,14 +296,15 @@
                 </div>
                 <!-- product wrapper end -->
                 <!-- products end -->
-                <div>
-                    {{ $productList->links() }}
+                <div class="mt-4">
+                    {{ $productList->links('app.paginate') }}
                 </div>
             </div>
+
             <!-- products -->
         @else
             <div class="col-span-3">
-                <div>khong cos san pham nao la {{ $namesearch }}</div>
+                <div>khong co san pham nao la {{ $namesearch }}</div>
             </div>
         @endif
 

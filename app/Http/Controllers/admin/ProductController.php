@@ -79,8 +79,6 @@ class ProductController extends Controller
             JobSendEmailNotification::dispatch($user->email);
         }
 
-
-
         return redirect('admin/products');
     }
 

@@ -374,7 +374,7 @@
     <!-- copyright -->
     <div class="bg-gray-800 py-4">
         <div class="container flex items-center justify-between">
-            <p class="text-white">© RAFCART - All Rights Reserved</p>
+            <p class="text-white">© RAFCART - Developer by Carter GoldenOwl</p>
             <div>
                 <img src="https://res.cloudinary.com/carternguyen/image/upload/v1650472817/shop/banner_3_gnoj3s.png"
                     class="h-5">

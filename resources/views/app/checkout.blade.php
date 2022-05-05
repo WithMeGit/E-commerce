@@ -16,6 +16,9 @@
         <div class="lg:col-span-8 border border-gray-200 px-4 py-4 rounded">
             <form action="/checkout" method="POST">
                 @csrf()
+                @if (isset($coupon))
+                    <input type="hidden" name="coupon" value="{{ $coupon->code }}" />
+                @endif
                 <h3 class="text-lg font-medium capitalize mb-4">
                     checkout
                 </h3>
@@ -53,14 +56,11 @@
                                 <select name="type"
                                     class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
-                                    <option value="ship tận nhà"
-                                        {{ $shipping->type == 'ship tận nhà' ? 'selected' : '' }}>
+                                    <option value="100" {{ $shipping->type == '100' ? 'selected' : '' }}>
                                         ship tận nhà</option>
-                                    <option value="ship tận nhà"
-                                        {{ $shipping->type == 'ship tới địa chỉ khác' ? 'selected' : '' }}>
+                                    <option value="200" {{ $shipping->type == '200' ? 'selected' : '' }}>
                                         ship tới địa chỉ khác</option>
-                                    <option value="ship tận nhà"
-                                        {{ $shipping->type == 'ship hàng thu tiền hộ' ? 'selected' : '' }}>
+                                    <option value="300" {{ $shipping->type == '300' ? 'selected' : '' }}>
                                         ship hàng thu tiền hộ</option>
                                 </select>
                             </div>
@@ -71,12 +71,11 @@
                                     <select name="method"
                                         class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                         aria-label="Default select example">
-                                        <option value="thanh toán khi nhận hàng"
-                                            {{ $payment->method == 'thanh toán khi nhận hàng' ? 'selected' : '' }}>thanh
+                                        <option value="100" {{ $payment->method == '100' ? 'selected' : '' }}>thanh
                                             toán
                                             khi nhận hàng</option>
-                                        <option value="chuyển khoản"
-                                            {{ $payment->method == 'chuyển khoản' ? 'selected' : '' }}>chuyển khoản
+                                        <option value="200" {{ $payment->method == '200' ? 'selected' : '' }}>
+                                            chuyển khoản
                                         </option>
                                     </select>
                                 </div>
@@ -87,8 +86,8 @@
                                     <select name="method"
                                         class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                         aria-label="Default select example">
-                                        <option value="thanh toán khi nhận hàng" selected>thanh toán khi nhận hàng</option>
-                                        <option value="chuyển khoản">chuyển khoản</option>
+                                        <option value="100" selected>thanh toán khi nhận hàng</option>
+                                        <option value="200">chuyển khoản</option>
                                     </select>
                                 </div>
                             </div>
@@ -101,6 +100,10 @@
                             <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 id="exampleFormControlTextarea1" rows="9"
                                 placeholder="Notes about your order, Special Notes for Delivery">{{ $shipping->note }}</textarea>
+                        </div>
+                        <div class="mb-3 xl:w-96">
+                            {!! NoCaptcha::renderJs() !!}
+                            {!! NoCaptcha::display() !!}
                         </div>
                         <!-- checkout -->
                         <button type="submit"
@@ -133,16 +136,16 @@
                             <label class="text-gray-600 mb-2 block">
                                 Email Address <span class="text-primary">*</span>
                             </label>
-                            <input type="text" class="input-box" name="email" required>
+                            <input type="email" class="input-box" name="email" required>
                         </div>
                         <div>
                             <div class="mb-3 xl:w-96">
                                 <select name="type"
                                     class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
-                                    <option value="ship tận nhà" selected>ship tận nhà</option>
-                                    <option value="ship tới địa chỉ khác">ship tới địa chỉ khác</option>
-                                    <option value="ship hàng thu tiền hộ">ship hàng thu tiền hộ</option>
+                                    <option value="100" selected>ship tận nhà</option>
+                                    <option value="200">ship tới địa chỉ khác</option>
+                                    <option value="300">ship hàng thu tiền hộ</option>
                                 </select>
                             </div>
                         </div>
@@ -151,8 +154,8 @@
                                 <select name="method"
                                     class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
-                                    <option value="thanh toán khi nhận hàng" selected>thanh toán khi nhận hàng</option>
-                                    <option value="chuyển khoản">chuyển khoản</option>
+                                    <option value="100" selected>thanh toán khi nhận hàng</option>
+                                    <option value="200">chuyển khoản</option>
                                 </select>
                             </div>
                         </div>
@@ -163,6 +166,10 @@
                             <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                 id="exampleFormControlTextarea1" rows="9"
                                 placeholder="Notes about your order, Special Notes for Delivery"></textarea>
+                        </div>
+                        <div class="mb-3 xl:w-96">
+                            {!! NoCaptcha::renderJs() !!}
+                            {!! NoCaptcha::display() !!}
                         </div>
                         <!-- checkout -->
                         <button type="submit"
@@ -252,18 +259,53 @@
             @endforeach
             <div class="flex justify-between border-b border-gray-200 mt-1">
                 <h4 class="text-gray-800 font-medium my-3 uppercase">Subtotal</h4>
-                <h4 class="text-gray-800 font-medium my-3 uppercase">{{ number_format($total) }} VNĐ</h4>
+                <h4 class="text-gray-800 font-medium my-3 uppercase">{{ number_format($sum) }} VNĐ</h4>
             </div>
             <div class="flex justify-between border-b border-gray-200">
                 <h4 class="text-gray-800 font-medium my-3 uppercase">Shipping</h4>
                 <h4 class="text-gray-800 font-medium my-3 uppercase">free</h4>
             </div>
-            <div class="flex justify-between">
-                <h4 class="text-gray-800 font-semibold my-3 uppercase">Total</h4>
-                <h4 class="text-gray-800 font-semibold my-3 uppercase">{{ number_format($total) }} VNĐ</h4>
-            </div>
+            @if (isset($coupon))
+                <div class="flex justify-between border-b border-gray-200">
+                    <h4 class="text-gray-800 font-medium my-3 uppercase">{{ $coupon->code }}</h4>
+                    <h4 class="text-gray-800 font-medium my-3 uppercase">Discount {{ $coupon->value }}%</h4>
+                </div>
+            @endif
+            @if (isset($total))
+                <div class="flex justify-between">
+                    <h4 class="text-gray-800 font-semibold my-3 uppercase">Total</h4>
+                    <h4 class="text-gray-800 font-semibold my-3 uppercase">{{ number_format($total) }} VNĐ</h4>
+                </div>
+            @else
+                <div class="flex justify-between">
+                    <h4 class="text-gray-800 font-semibold my-3 uppercase">Total</h4>
+                    <h4 class="text-gray-800 font-semibold my-3 uppercase">{{ number_format($sum) }} VNĐ</h4>
+                </div>
+            @endif
+
         </div>
         <!-- order summary end -->
     </div>
     <!-- checkout wrapper end -->
+    @error('phone')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('email')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('g-recaptcha-response')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @if (Session::has('placeorder'))
+        <script>
+            toastr.warning('{{ Session::get('placeorder') }}');
+        </script>
+    @endif
+
 @endsection

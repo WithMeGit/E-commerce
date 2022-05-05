@@ -159,15 +159,27 @@
                 <h4>Total</h4>
                 <h4>{{ number_format($total) }} VNĐ</h4>
             </div>
+            <form action="/checkout" method="GET">
+                <div class="flex mb-5">
+                    <input type="text" id="coupon" name="coupon"
+                        class="pl-4 w-full border border-primary py-2 px-3 rounded-l-md focus:ring-primary focus:border-primary text-sm"
+                        placeholder="Coupon">
+                </div>
 
-            <!-- checkout -->
-            <a href="/checkout"
-                class="bg-primary border border-primary text-white px-4 py-3 font-medium rounded-md uppercase hover:bg-transparent
+                <!-- checkout -->
+                <button type="submit"
+                    class="bg-primary border border-primary text-white px-4 py-3 font-medium rounded-md uppercase hover:bg-transparent
              hover:text-primary transition text-sm w-full block text-center">
-                Process to checkout
-            </a>
+                    Process to checkout
+                </button>
+            </form>
             <!-- checkout end -->
         </div>
         <!-- order summary end -->
     </div>
+    @if (Session::has('coupon'))
+        <script>
+            toastr.error('{{ Session::get('coupon') }}');
+        </script>
+    @endif
 @endsection

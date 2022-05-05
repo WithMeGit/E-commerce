@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carts', [\App\Http\Controllers\home\CartController::class, 'create']);
     Route::post('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'update']);
     Route::delete('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'destroy']);
+    Route::post('/applycoupon', [\App\Http\Controllers\home\CartController::class, 'applyCoupon']);
 
     //
     Route::get('/orders', [\App\Http\Controllers\home\OrderController::class, 'index']);
@@ -74,11 +75,6 @@ Route::middleware(['admin'])->group(function () {
     Route::resource('admin/orders', \App\Http\Controllers\admin\OrderController::class);
     Route::post('admin/orders/{id}', [\App\Http\Controllers\admin\OrderController::class, 'updateOrder']);
 
-    // //pusher
-    // Route::get('/pusher', function (Illuminate\Http\Request $request) {
-    //     event(new App\Events\NotificationPusherEvent($request));
-    // });
-
     //cart
     Route::resource('admin/carts', \App\Http\Controllers\admin\CartController::class);
 
@@ -93,4 +89,8 @@ Route::middleware(['admin'])->group(function () {
     //products
     Route::resource('/admin/products', \App\Http\Controllers\admin\ProductController::class);
     Route::post('admin/products/{id}', [\App\Http\Controllers\admin\ProductController::class, 'update']);
+
+    //coupon
+    Route::resource('/admin/coupons', \App\Http\Controllers\admin\CouponController::class);
+    Route::post('/admin/coupons/{id}', [App\Http\Controllers\admin\CouponController::class, 'update']);
 });

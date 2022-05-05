@@ -29,7 +29,15 @@
                             {{ number_format($order->order_total) }} VNĐ
                         </div>
                         <div>
-                            {{ $order->order_status }}
+                            @if ($order->order_status == 100)
+                                Đang chờ xử lý
+                            @else
+                                @if ($order->order_status == 200)
+                                    Vận chuyển
+                                @else
+                                    Đã giao
+                                @endif
+                            @endif
                         </div>
                         <div class="text-gray-600 hover:text-primary cursor-pointer">
                             <a href="/order/detail/{{ $order->id }}"><i class="fas fa-eye"></i></a>

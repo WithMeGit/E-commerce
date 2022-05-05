@@ -25,6 +25,9 @@
             'email' => 'Email dose not exist',
             'password' => 'Incorrect password',
         ],
+        'placeorder' => [
+            'fail' => 'You must add product to cart',
+        ],
         /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

@@ -31,7 +31,8 @@
                         </label>
                         <select class="input-box" name="gender">
                             <option
-                                @if (isset($userdetail)) {{ $userdetail->gender == '0' ? 'selected' : '' }} @else value="0" selected @endif>
+                                @if (isset($userdetail)) {{ $userdetail->gender == '0' ? 'selected' : '' }} @else value="0" selected @endif
+                                value="0">
                                 Male</option>
                             <option
                                 @if (isset($userdetail)) {{ $userdetail->gender == '1' ? 'selected' : '' }} @else value="1" @endif
@@ -44,14 +45,14 @@
                         <label class="text-gray-600 mb-2 block">
                             Email Address
                         </label>
-                        <input type="text" name="email" class="input-box"
+                        <input type="email" name="email" class="input-box"
                             value="@if (Auth::user()) {{ Auth::user()->email }} @endif" required>
                     </div>
                     <div>
                         <label class="text-gray-600 mb-2 block">
                             Phone Number
                         </label>
-                        <input type="text" name="phone" class="input-box"
+                        <input type="phone" name="phone" class="input-box"
                             @if (isset($userdetail)) value="{{ $userdetail->phone }}" @else value="" @endif
                             required>
                     </div>
@@ -66,4 +67,24 @@
         </form>
     </div>
     <!-- account content end -->
+    @error('phone')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('email')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('birthday')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('gender')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
 @endsection

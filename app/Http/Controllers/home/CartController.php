@@ -4,6 +4,7 @@ namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Products;
 use App\Models\WishList;
 use Illuminate\Http\Request;
@@ -92,5 +93,16 @@ class CartController extends Controller
         $request->session()->put('cartCount', $cartCount);
 
         return redirect('/carts');
+    }
+
+    public function applyCoupon(Request $request)
+    {
+        $coupon = Coupon::select('code')->get();
+        foreach ($coupon as $key => $item) {
+            if ($request->coupon == $item->code) {
+                return 1;
+            }
+        }
+        return 0;
     }
 }

@@ -33,6 +33,19 @@ function detailCategory(id, url) {
     });
 }
 
+function detailCoupon(id, url) {
+    $.ajax({
+        method: "GET",
+        dataType: "JSON",
+        url: url,
+        data: id,
+    }).done(function (res) {
+        $("#code").text("Code: " + res.code);
+        $("#value").text("Value: " + res.value + "%");
+        $("#quantity").text("Quantity: " + res.quantity);
+    });
+}
+
 function editItem(url) {
     window.location.href = url;
 }

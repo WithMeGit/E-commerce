@@ -58,7 +58,7 @@
                     </table>
                 </div>
                 <div class="flex justify-center mt-4">
-                    {{ $userlist->links() }}
+                    {{ $userlist->links('admin.paginate') }}
                 </div>
             </div>
         </div>

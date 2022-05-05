@@ -55,7 +55,15 @@
                                             {{ $order->phone }}
                                         </td>
                                         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                            {{ $order->type }}
+                                            @if ($order->type == 100)
+                                                Ship tận nhà
+                                            @else
+                                                @if ($order->order_status == 200)
+                                                    Ship tới địa chỉ khác
+                                                @else
+                                                    Ship hàng thu tiền hộ
+                                                @endif
+                                            @endif
                                         </td>
                                         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                             {{ $order->note }}

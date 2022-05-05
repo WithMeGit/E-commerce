@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\home;
 
+use App\Constants\OrderStatusConstant;
+use App\Constants\PaymentStatusContant;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PlaceOrderRequest;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Payment;
@@ -14,30 +18,61 @@ use Illuminate\Http\Request;
 
 class CheckOutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->coupon) {
+            $coupon = Coupon::where('code', '=', $request->coupon)->first();
+            if ($coupon) {
+                $carts = [];
+                $sum = 0;
+                $total = 0;
+                $category = Category::all()->where('active', '=', 1);
+
+                $shippings = Shipping::where('user_id', '=', Auth::user()->id)->first();
+
+                $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
+                $cartsMap = collect($carts)->map(function ($cart) use (&$sum) {
+                    $cart->subTotal = $cart->price * $cart->quantity;
+                    $sum += $cart->subTotal;
+                    return $cart;
+                });
+                $total = $sum - ($sum * ($coupon->value / 100));
+                if ($shippings) {
+                    $payments = Payment::where('user_id', '=', Auth::user()->id)->first();
+
+                    return view("app.checkout")
+                        ->with(['carts' => $carts, 'total' => $total, 'coupon' => $coupon, 'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings, 'payment' => $payments]);
+                } else {
+                    return view("app.checkout")
+                        ->with(['carts' => $carts, 'total' => $total, 'coupon' => $coupon, 'sum' => $sum, 'categoryList' => $category]);
+                }
+            } else {
+                $request->session()->flash("coupon", "The discount code is incorrect");
+                return redirect()->back();
+            }
+        }
         $carts = [];
-        $total = 0;
+        $sum = 0;
         $category = Category::all()->where('active', '=', 1);
 
         $shippings = Shipping::where('user_id', '=', Auth::user()->id)->first();
 
         $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
-        $cartsMap = collect($carts)->map(function ($cart) use (&$total) {
+        $cartsMap = collect($carts)->map(function ($cart) use (&$sum) {
             $cart->subTotal = $cart->price * $cart->quantity;
-            $total += $cart->subTotal;
+            $sum += $cart->subTotal;
             return $cart;
         });
         if ($shippings) {
             $payments = Payment::where('user_id', '=', Auth::user()->id)->first();
 
-            return view("app.checkout")->with(['carts' => $carts, 'total' => $total, 'categoryList' => $category, 'shipping' => $shippings, 'payment' => $payments]);
+            return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings, 'payment' => $payments]);
         } else {
-            return view("app.checkout")->with(['carts' => $carts, 'total' => $total, 'categoryList' => $category]);
+            return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category]);
         }
     }
 
-    public function placeOrder(Request $request)
+    public function placeOrder(PlaceOrderRequest $request)
     {
         $carts = [];
         $total = 0;
@@ -47,6 +82,11 @@ class CheckOutController extends Controller
             $total += $cart->subTotal;
             return $cart;
         });
+
+        if ($total == 0) {
+            $request->session()->flash('placeorder', __('messages.placeorder.fail'));
+            return redirect()->back();
+        }
 
         $payment = Payment::where('user_id', '=', Auth::user()->id)->first();
         $shipping = Shipping::where('user_id', '=', Auth::user()->id)->first();
@@ -60,24 +100,36 @@ class CheckOutController extends Controller
             $shipping->save();
             if ($payment) {
                 $payment->method = $request->method;
-                $payment->status = 'đang chờ thanh toán';
+                $payment->status = PaymentStatusContant::PENDDING_PAYMENT;
                 $payment->save();
             } else {
                 $payment = Payment::create([
                     'user_id' => Auth::user()->id,
                     'method' => $request->method,
-                    'status' => 'đang chờ thanh toán',
+                    'status' => PaymentStatusContant::PENDDING_PAYMENT,
                 ]);
             }
-
-            $order = Order::create([
-                'user_id' => Auth::user()->id,
-                'payment_id' => $payment->id,
-                'shipping_id' => $shipping->id,
-                'order_total' => $total,
-                'order_status' => 'Đang chờ xử lý',
-            ]);
-
+            if ($request->coupon) {
+                $coupon = Coupon::where('code', '=', $request->coupon)->first();
+                $total_coupon = $total - ($total * ($coupon->value / 100));
+                $order = Order::create([
+                    'user_id' => Auth::user()->id,
+                    'payment_id' => $payment->id,
+                    'shipping_id' => $shipping->id,
+                    'order_total' => $total_coupon,
+                    'order_status' => OrderStatusConstant::PENDDING,
+                ]);
+                $coupon->quantity = $coupon->quantity - 1;
+                $coupon->save();
+            } else {
+                $order = Order::create([
+                    'user_id' => Auth::user()->id,
+                    'payment_id' => $payment->id,
+                    'shipping_id' => $shipping->id,
+                    'order_total' => $total,
+                    'order_status' => OrderStatusConstant::PENDDING,
+                ]);
+            }
             foreach ($carts as $item) {
                 OrderDetail::create([
                     'order_id' => $order->id,
@@ -102,7 +154,7 @@ class CheckOutController extends Controller
             $payment = Payment::create([
                 'user_id' => Auth::user()->id,
                 'method' => $request->method,
-                'status' => 'đang chờ thanh toán',
+                'status' => PaymentStatusContant::PENDDING_PAYMENT,
             ]);
 
             $shipping = Shipping::create([
@@ -114,14 +166,27 @@ class CheckOutController extends Controller
                 'type' => $request->type,
                 'note' => $request->note,
             ]);
-
-            $order = Order::create([
-                'user_id' => Auth::user()->id,
-                'payment_id' => $payment->id,
-                'shipping_id' => $shipping->id,
-                'order_total' => $total,
-                'order_status' => 'Đang chờ xử lý',
-            ]);
+            if ($request->coupon) {
+                $coupon = Coupon::where('code', '=', $request->coupon)->first();
+                $total_coupon = $total - ($total * ($coupon->value / 100));
+                $order = Order::create([
+                    'user_id' => Auth::user()->id,
+                    'payment_id' => $payment->id,
+                    'shipping_id' => $shipping->id,
+                    'order_total' => $total_coupon,
+                    'order_status' => OrderStatusConstant::PENDDING,
+                ]);
+                $coupon->quantity = $coupon->quantity - 1;
+                $coupon->save();
+            } else {
+                $order = Order::create([
+                    'user_id' => Auth::user()->id,
+                    'payment_id' => $payment->id,
+                    'shipping_id' => $shipping->id,
+                    'order_total' => $total,
+                    'order_status' => OrderStatusConstant::PENDDING,
+                ]);
+            }
 
             foreach ($carts as $item) {
                 OrderDetail::create([

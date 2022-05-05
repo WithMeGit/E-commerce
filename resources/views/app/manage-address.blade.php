@@ -32,7 +32,8 @@
                             <label class="text-gray-600 mb-2 block">
                                 Phone Number
                             </label>
-                            <input type="text" name="phone" class="input-box" value="{{ $shipping->phone }}" required>
+                            <input type="phone" name="phone" class="input-box" value="{{ $shipping->phone }}"
+                                required>
                         </div>
                         <!-- Single input end -->
                     </div>
@@ -67,7 +68,7 @@
                             <label class="text-gray-600 mb-2 block">
                                 Phone Number
                             </label>
-                            <input type="text" name="phone" class="input-box" required>
+                            <input type="phone" name="phone" class="input-box" required>
                         </div>
                         <!-- Single input end -->
                     </div>
@@ -88,4 +89,14 @@
             </div>
         </form>
     </div>
+    @error('phone')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
+    @error('email')
+        <script>
+            toastr.error('{{ $message }}');
+        </script>
+    @enderror
 @endsection

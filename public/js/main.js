@@ -79,28 +79,6 @@ function addtowishlist(id) {
     window.location.href = "/wishlist";
 }
 
-function count() {
-    var countNotification = document.getElementById("countNotification");
-
-    let count = parseInt(countNotification.getAttribute("data-count"));
-    count++;
-    countNotification.setAttribute("data-count", count);
-
-    countNotification.className +=
-        "absolute -right-1 -top-1 w-5 h-5 rounded-full flex items-center justify-center bg-primary text-white text-xs";
-
-    countNotification.textContent = count;
-    var Notifications = document.getElementById("Notifications");
-
-    var li = document.createElement("li");
-    var a = document.createElement("a");
-    a.className +=
-        "dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100";
-    a.appendChild(document.createTextNode(`Đơn hàng của bạn + data `));
-    li.appendChild(a);
-    Notifications.appendChild(li);
-}
-
 $(document).ready(function () {
     $("#search_name").keyup(function () {
         var search_name = $(this).val();
@@ -120,14 +98,34 @@ $(document).ready(function () {
         $("#search_name").val($(this).text());
         $("#nameProductList").fadeOut();
     });
+
+    $("#coupon").keyup(function () {
+        var couponElement = document.getElementById("coupon");
+        var coupon = $(this).val();
+        if (coupon != "") {
+            $.ajax({
+                url: "/applycoupon",
+                method: "POST",
+                data: { coupon: coupon },
+                success: function (res) {
+                    if (res == 1) {
+                        couponElement.classList.add("text-green-600");
+                    } else {
+                        couponElement.classList.add("text-red-600");
+                    }
+                },
+            });
+        }
+    });
 });
 
-var pusher = new Pusher("2d3f727a5410fc8aebf6", {
+var pusher = new Pusher("7f59a70c770ed9504939", {
     cluster: "ap1",
 });
 
 var channel = pusher.subscribe("notification");
 channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
+    console.log(data.message);
     $.ajax({
         method: "POST",
         dataType: "JSON",
