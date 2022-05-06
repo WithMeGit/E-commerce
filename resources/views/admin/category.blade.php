@@ -74,7 +74,7 @@
                     </table>
                 </div>
                 <div class="flex justify-center mt-4">
-                    {{ $categoryList->links() }}
+                    {{ $categoryList->links('admin.paginate') }}
                 </div>
             </div>
         </div>

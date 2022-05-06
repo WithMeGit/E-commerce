@@ -5,10 +5,17 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
-use App\Models\Coupon;
+use App\Repositories\Coupon\CouponInterface;
 
 class CouponController extends Controller
 {
+    protected $couponRepository;
+
+    public function __construct(CouponInterface $couponInterface)
+    {
+        $this->couponRepository = $couponInterface;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +23,7 @@ class CouponController extends Controller
      */
     public function index()
     {
-        $coupons = Coupon::paginate(5);
+        $coupons = $this->couponRepository->getAll();
         return view('admin.coupon')->with(['title' => 'Coupon List', 'couponList' => $coupons]);
     }
 
@@ -38,7 +45,7 @@ class CouponController extends Controller
      */
     public function store(CreateCouponRequest $request)
     {
-        Coupon::create($request->all());
+        $this->couponRepository->store($request);
         $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('admin/coupons');
@@ -52,8 +59,7 @@ class CouponController extends Controller
      */
     public function show($id)
     {
-        $coupon = Coupon::find($id);
-        return $coupon;
+        return $this->couponRepository->find($id);
     }
 
     /**
@@ -64,7 +70,7 @@ class CouponController extends Controller
      */
     public function edit($id)
     {
-        $coupon = Coupon::where('id', '=', $id)->first();
+        $coupon = $this->couponRepository->find($id);
 
         return view('admin.dialogcoupon')->with(['coupon' => $coupon, 'title' => 'Edit Coupon', 'active' => 'Save']);
     }
@@ -78,11 +84,7 @@ class CouponController extends Controller
      */
     public function update(UpdateCouponRequest $request, $id)
     {
-        $coupon = Coupon::find($id);
-        $coupon->code = $request->code;
-        $coupon->value = $request->value;
-        $coupon->quantity = $request->quantity;
-        $coupon->save();
+        $this->couponRepository->update($request, $id);
 
         $request->session()->flash('success', __('messages.update.success'));
 
@@ -97,8 +99,6 @@ class CouponController extends Controller
      */
     public function destroy($id)
     {
-        $coupon = Coupon::find($id);
-        $coupon->delete();
-        return TRUE;
+        return $this->couponRepository->delete($id);
     }
 }

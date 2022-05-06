@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
-use App\Models\Products;
-use App\Models\User;
+use App\Repositories\Cart\CartInterface;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    protected $cartRepository;
+
+    public function __construct(CartInterface $cartInterface)
+    {
+        $this->cartRepository = $cartInterface;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +21,8 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        $carts = Cart::paginate(5);
-        $users = User::all();
+        $carts = $this->cartRepository->getAll();
+        $users = $this->cartRepository->getAllUser();
         return view("admin.cart")->with(['cartList' => $carts, 'userList' => $users, 'title' => 'Cart List']);
     }
 

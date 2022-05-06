@@ -5,11 +5,17 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EditAccountRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Repositories\User\UserInterface;
 
 class UserController extends Controller
 {
+
+    protected $userRepository;
+
+    public function __construct(UserInterface $userInterface)
+    {
+        $this->userRepository = $userInterface;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::paginate(5);
+        $user = $this->userRepository->getAll();
 
         return view('admin.users')->with(['userlist' => $user, 'title' => 'User List']);
     }
@@ -40,9 +46,7 @@ class UserController extends Controller
      */
     public function store(RegisterRequest $request)
     {
-        $input = $request->all();
-        $input['password'] = hash::make($input['password']);
-        User::create($input);
+        $this->userRepository->store($request);
         $request->session()->flash('success', __('messages.carete.success'));
         return redirect('admin/users');
     }
@@ -66,7 +70,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = $this->userRepository->find($id);
         return view('admin.dialogusers')->with(['user' => $user, 'title' => 'Edit User', 'active' => 'Save']);
     }
 
@@ -79,15 +83,7 @@ class UserController extends Controller
      */
     public function update(EditAccountRequest $request, $id)
     {
-        $user = User::find($id);
-        $input = $request->all();
-        $input['password'] = hash::make($input['password']);
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->password = $input['password'];
-        $user->role = $input['role'];
-
-        $user->save();
+        $this->userRepository->update($request, $id);
 
         $request->session()->flash('success', __('messages.update.success'));
         return redirect('admin/users');

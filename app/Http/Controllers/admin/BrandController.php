@@ -5,11 +5,15 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
-use App\Models\Brand;
-use App\Models\Category;
+use App\Repositories\Brand\BrandInterface;
 
 class BrandController extends Controller
 {
+    protected $brandRepository;
+    public function __construct(BrandInterface $brandInterface)
+    {
+        $this->brandRepository = $brandInterface;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +21,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brand = Brand::paginate(5);
+        $brand = $this->brandRepository->getAll();
         return view('admin.brands')->with(['title' => 'Brand List', 'brandlist' => $brand]);
     }
 
@@ -28,7 +32,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        $category = Category::all();
+        $category = $this->brandRepository->getAllCategory();
         return view('admin.dialogbrands')->with(['title' => 'Create Brand', 'active' => 'Create', 'category' => $category]);
     }
 
@@ -40,7 +44,7 @@ class BrandController extends Controller
      */
     public function store(CreateBrandRequest $request)
     {
-        Brand::create($request->all());
+        $this->brandRepository->store($request);
         $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('admin/brands');
@@ -54,8 +58,7 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        $brand = Brand::find($id);
-        return $brand;
+        return $this->brandRepository->find($id);
     }
 
     /**
@@ -66,8 +69,8 @@ class BrandController extends Controller
      */
     public function edit($id)
     {
-        $brand = Brand::where('id', '=', $id)->first();
-        $category = Category::all();
+        $brand = $this->brandRepository->find($id);
+        $category = $this->brandRepository->getAllCategory();
         return view('admin.dialogbrands')->with([
             'brand' => $brand, 'category' => $category,
             'title' => 'Edit Brand', 'active' => 'Save'
@@ -83,12 +86,7 @@ class BrandController extends Controller
      */
     public function update(UpdateBrandRequest $request, $id)
     {
-        $brand = Brand::find($id);
-        $brand->name = $request->name;
-        $brand->category_id = $request->category_id;
-        $brand->description = $request->description;
-        $brand->active = $request->active;
-        $brand->save();
+        $this->brandRepository->update($request, $id);
         $request->session()->flash('success', __('messages.update.success'));
 
         return redirect('admin/brands');
@@ -102,8 +100,6 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = Brand::find($id);
-        $brand->delete();
-        return TRUE;
+        return $this->brandRepository->delete($id);
     }
 }

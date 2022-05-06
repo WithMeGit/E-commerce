@@ -55,7 +55,7 @@
                     </table>
                 </div>
                 <div class="flex justify-center mt-4">
-                    {{ $couponList->links() }}
+                    {{ $couponList->links('admin.paginate') }}
                 </div>
             </div>
         </div>

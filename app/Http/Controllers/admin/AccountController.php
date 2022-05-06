@@ -5,13 +5,18 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
+use App\Repositories\User\UserInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(UserInterface $userInterface)
+    {
+        $this->userRepository = $userInterface;
+    }
+
     public function index()
     {
         return view("admin.home");
@@ -25,25 +30,20 @@ class AccountController extends Controller
     public function login(LoginRequest $request)
     {
 
-        $loginData = User::where('email', '=', $request->email)->first();
-
-        if (!$loginData) {
+        if ($this->userRepository->login($request) == 1) {
+            return redirect("admin");
+        } else if ($this->userRepository->login($request) == 2) {
             $request->session()->flash('fail', __('messages.fail.email'));
             return redirect()->back();
         } else {
-            if (Hash::check($request->password, $loginData->password)) {
-                auth::login($loginData, true);
-                return redirect('admin');
-            } else {
-                $request->session()->flash('fail', __('messages.fail.password'));
-                return redirect()->back();
-            }
+            $request->session()->flash('fail', __('messages.fail.password'));
+            return redirect()->back();
         }
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        $this->userRepository->logout($request);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -58,11 +58,8 @@ class AccountController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $input = $request->all();
-        $input['role'] = 1;
-        $input['password'] = hash::make($input['password']);
-        $user = User::create($input);
-        auth::login($user, true);
+        $this->userRepository->register($request);
+
         return view('admin.home');
     }
 }

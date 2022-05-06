@@ -5,11 +5,16 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
-use App\Models\Category;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Repositories\Category\CategoryInterface;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(CategoryInterface $categoryInterface)
+    {
+        $this->categoryRepository = $categoryInterface;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +22,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $category = Category::paginate(5);
+        $category = $this->categoryRepository->getAll();
+
         return view('admin.category')->with(['categoryList' => $category, 'title' => 'Category List']);
     }
 
@@ -39,16 +45,8 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
-            'folder' => 'shop'
-        ])->getSecurePath();
+        $this->categoryRepository->store($request);
 
-        Category::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'image' => $uploadedFileUrl,
-            'active' => $request->active,
-        ]);
         $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('/admin/category');
@@ -62,8 +60,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        return $category;
+        return $this->categoryRepository->find($id);
     }
 
     /**
@@ -74,7 +71,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $category = Category::where('id', '=', $id)->first();
+        $category = $this->categoryRepository->find($id);
         return view('admin.dialogcategory')->with(['title' => 'Edit Category', 'active' => 'Save', 'category' => $category]);
     }
 
@@ -87,26 +84,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, $id)
     {
-        $cate = Category::find($id);
-        if ($request->image == null) {
-            $url = $cate->image;
-
-            $cate->name = $request->name;
-            $cate->description = $request->description;
-            $cate->image = $url;
-            $cate->active = $request->active;
-            $cate->save();
-        } else {
-            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
-                'folder' => 'shop'
-            ])->getSecurePath();
-
-            $cate->name = $request->name;
-            $cate->description = $request->description;
-            $cate->image = $uploadedFileUrl;
-            $cate->active = $request->active;
-            $cate->save();
-        }
+        $this->categoryRepository->update($request, $id);
 
         $request->session()->flash('success', __('messages.update.success'));
 
@@ -121,8 +99,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
-        $category->delete();
-        return TRUE;
+        return $this->categoryRepository->delete($id);
     }
 }
