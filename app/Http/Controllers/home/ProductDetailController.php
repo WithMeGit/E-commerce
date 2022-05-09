@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductDetailController extends Controller
 {
-
     protected $productRepository;
 
     public function __construct(ProductInterface $productInterface)
