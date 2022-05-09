@@ -2,21 +2,39 @@
 
 namespace App\Repositories\Product;
 
-interface ProductInterface
+use App\Repositories\RepositoryInterface;
+
+interface ProductInterface extends RepositoryInterface
 {
-    public function getAll();
+    public function getAllProductActive($number);
+
+    public function getAllProductActiveRandom($number);
 
     public function getAllBrand();
+
+    public function getBrandWithProductByID($id);
+
+    public function getCategoryWithProductByID($id);
 
     public function getAllCategory();
 
     public function getAllCustomer();
 
-    public function store($request);
+    public function getCategoryByName($name);
 
-    public function update($request, $id);
+    public function getBrandByName($name);
 
-    public function find($id);
+    public function getProductByCategoryName($name);
 
-    public function delete($id);
+    public function getProductByBrandName($name);
+
+    public function getProductByName($request);
+
+    public function checkProductByName($request);
+
+    public function countBrand();
+
+    public function countCategory();
+
+    public function searchProduct($request);
 }

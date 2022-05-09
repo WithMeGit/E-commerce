@@ -6,67 +6,89 @@ use App\Constants\OrderStatusConstant;
 use App\Constants\PaymentStatusContant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlaceOrderRequest;
-use App\Models\Cart;
-use App\Models\Category;
-use App\Models\Coupon;
-use App\Models\Order;
-use App\Models\OrderDetail;
-use App\Models\Payment;
-use App\Models\Shipping;
+use App\Repositories\Cart\CartInterface;
+use App\Repositories\Coupon\CouponInterface;
+use App\Repositories\Order\OrderInterface;
+use App\Repositories\Orderdetail\OrderdetailInterface;
+use App\Repositories\Payment\PaymentInterface;
+use App\Repositories\Shipping\ShippingInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CheckOutController extends Controller
 {
+    protected $orderRepository;
+    protected $orderdetailRepository;
+    protected $cartRepository;
+    protected $couponRepository;
+    protected $shippingRepository;
+    protected $paymentRepository;
+
+    public function __construct(
+        OrderInterface $orderInterface,
+        OrderdetailInterface $orderdetailInterface,
+        CartInterface $cartInterface,
+        CouponInterface $couponInterface,
+        ShippingInterface $shippingInterface,
+        PaymentInterface $paymentInterface
+    ) {
+        $this->orderRepository = $orderInterface;
+        $this->orderdetailRepository = $orderdetailInterface;
+        $this->cartRepository = $cartInterface;
+        $this->couponRepository = $couponInterface;
+        $this->shippingRepository = $shippingInterface;
+        $this->paymentRepository = $paymentInterface;
+    }
     public function index(Request $request)
     {
+        $carts = [];
+        $sum = 0;
+        $total = 0;
+        $category = $this->orderRepository->getCategoryActive();
+        if (Auth::user()) {
+            $this->orderRepository->countItem(request());
+        }
+        $shippings = $this->shippingRepository->getShippingWithUserLogged();
+        $payments = $this->paymentRepository->getPaymentWithUserLogged();
+        $carts = $this->cartRepository->getCartWithuserLogged();
+
+        collect($carts)->map(function ($cart) use (&$sum) {
+            $cart->subTotal = $cart->price * $cart->quantity;
+            $sum += $cart->subTotal;
+            return $cart;
+        });
+
         if ($request->coupon) {
-            $coupon = Coupon::where('code', '=', $request->coupon)->first();
+            $coupon = $this->couponRepository->getCouponByName($request->coupon);
             if ($coupon) {
-                $carts = [];
-                $sum = 0;
-                $total = 0;
-                $category = Category::all()->where('active', '=', 1);
-
-                $shippings = Shipping::where('user_id', '=', Auth::user()->id)->first();
-
-                $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
-                $cartsMap = collect($carts)->map(function ($cart) use (&$sum) {
-                    $cart->subTotal = $cart->price * $cart->quantity;
-                    $sum += $cart->subTotal;
-                    return $cart;
-                });
                 $total = $sum - ($sum * ($coupon->value / 100));
                 if ($shippings) {
-                    $payments = Payment::where('user_id', '=', Auth::user()->id)->first();
 
                     return view("app.checkout")
-                        ->with(['carts' => $carts, 'total' => $total, 'coupon' => $coupon, 'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings, 'payment' => $payments]);
+                        ->with([
+                            'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                            'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
+                            'payment' => $payments
+                        ]);
                 } else {
                     return view("app.checkout")
-                        ->with(['carts' => $carts, 'total' => $total, 'coupon' => $coupon, 'sum' => $sum, 'categoryList' => $category]);
+                        ->with([
+                            'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                            'sum' => $sum, 'categoryList' => $category
+                        ]);
                 }
             } else {
                 $request->session()->flash("coupon", "The discount code is incorrect");
                 return redirect()->back();
             }
         }
-        $carts = [];
-        $sum = 0;
-        $category = Category::all()->where('active', '=', 1);
 
-        $shippings = Shipping::where('user_id', '=', Auth::user()->id)->first();
-
-        $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
-        $cartsMap = collect($carts)->map(function ($cart) use (&$sum) {
-            $cart->subTotal = $cart->price * $cart->quantity;
-            $sum += $cart->subTotal;
-            return $cart;
-        });
         if ($shippings) {
-            $payments = Payment::where('user_id', '=', Auth::user()->id)->first();
 
-            return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings, 'payment' => $payments]);
+            return view("app.checkout")->with([
+                'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
+                'shipping' => $shippings, 'payment' => $payments
+            ]);
         } else {
             return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category]);
         }
@@ -76,20 +98,37 @@ class CheckOutController extends Controller
     {
         $carts = [];
         $total = 0;
-        $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
-        $cartsMap = collect($carts)->map(function ($cart) use (&$total) {
+        $carts = $this->cartRepository->getCartWithuserLogged();
+
+        $payment = $this->paymentRepository->getPaymentWithUserLogged();
+        $shipping = $this->shippingRepository->getShippingWithUserLogged();
+
+        collect($carts)->map(function ($cart) use (&$total) {
             $cart->subTotal = $cart->price * $cart->quantity;
             $total += $cart->subTotal;
             return $cart;
         });
 
+        //payment
+        $data_payment = [];
+        $data_payment['user_id'] = Auth::user()->id;
+        $data_payment['method'] = $request->method;
+        $data_payment['status'] = PaymentStatusContant::PENDDING_PAYMENT;
+
+        //shipping
+        $data_shipping = [];
+        $data_shipping['user_id'] = Auth::user()->id;
+        $data_shipping['name'] = $request->name;
+        $data_shipping['address'] = $request->address;
+        $data_shipping['phone'] = $request->phone;
+        $data_shipping['email'] = $request->email;
+        $data_shipping['type'] = $request->type;
+        $data_shipping['note'] = $request->note;
+
         if ($total == 0) {
             $request->session()->flash('placeorder', __('messages.placeorder.fail'));
             return redirect()->back();
         }
-
-        $payment = Payment::where('user_id', '=', Auth::user()->id)->first();
-        $shipping = Shipping::where('user_id', '=', Auth::user()->id)->first();
         if ($shipping) {
             $shipping->name = $request->name;
             $shipping->address = $request->address;
@@ -103,110 +142,69 @@ class CheckOutController extends Controller
                 $payment->status = PaymentStatusContant::PENDDING_PAYMENT;
                 $payment->save();
             } else {
-                $payment = Payment::create([
-                    'user_id' => Auth::user()->id,
-                    'method' => $request->method,
-                    'status' => PaymentStatusContant::PENDDING_PAYMENT,
-                ]);
+                $payment = $this->paymentRepository->store($data_payment);
             }
+
+            $data_order = [];
+            $data_order['user_id'] = Auth::user()->id;
+            $data_order['payment_id'] = $payment->id;
+            $data_order['shipping_id'] = $shipping->id;
+            $data_order['order_status'] = OrderStatusConstant::PENDDING;
+
             if ($request->coupon) {
-                $coupon = Coupon::where('code', '=', $request->coupon)->first();
+                $coupon = $this->couponRepository->getCouponByName($request->coupon);
                 $total_coupon = $total - ($total * ($coupon->value / 100));
-                $order = Order::create([
-                    'user_id' => Auth::user()->id,
-                    'payment_id' => $payment->id,
-                    'shipping_id' => $shipping->id,
-                    'order_total' => $total_coupon,
-                    'order_status' => OrderStatusConstant::PENDDING,
-                ]);
+
+                $data_order['order_total'] = $total_coupon;
+                $order = $this->orderRepository->create($data_order);
                 $coupon->quantity = $coupon->quantity - 1;
                 $coupon->save();
             } else {
-                $order = Order::create([
-                    'user_id' => Auth::user()->id,
-                    'payment_id' => $payment->id,
-                    'shipping_id' => $shipping->id,
-                    'order_total' => $total,
-                    'order_status' => OrderStatusConstant::PENDDING,
-                ]);
+                $data_order['order_total'] = $total;
+                $order = $this->orderRepository->create($data_order);
             }
-            foreach ($carts as $item) {
-                OrderDetail::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'product_name' => $item->name,
-                    'product_price' => $item->price,
-                    'product_quantity' => $item->quantity,
-                    'product_size' => $item->size,
-                    'product_color' => $item->color,
-                ]);
-
-                $del_cart = Cart::find($item->id);
-                $del_cart->delete();
-            }
-            $request->session()->put('cartCount', 0);
-            $orderCount = Order::where('user_id', '=', Auth::user()->id)->count();
-            $request->session()->put('orderCount', $orderCount);
-
-            return redirect("/order-complete");
         } else {
+            $payment = $this->paymentRepository->create($data_payment);
+            $shipping = $this->shippingRepository->create($data_shipping);
 
-            $payment = Payment::create([
-                'user_id' => Auth::user()->id,
-                'method' => $request->method,
-                'status' => PaymentStatusContant::PENDDING_PAYMENT,
-            ]);
+            $data_order = [];
+            $data_order['user_id'] = Auth::user()->id;
+            $data_order['payment_id'] = $payment->id;
+            $data_order['shipping_id'] = $shipping->id;
+            $data_order['order_status'] = OrderStatusConstant::PENDDING;
 
-            $shipping = Shipping::create([
-                'user_id' => Auth::user()->id,
-                'name' => $request->name,
-                'address' => $request->address,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'type' => $request->type,
-                'note' => $request->note,
-            ]);
             if ($request->coupon) {
-                $coupon = Coupon::where('code', '=', $request->coupon)->first();
+                $coupon = $this->couponRepository->getCouponByName($request->coupon);
                 $total_coupon = $total - ($total * ($coupon->value / 100));
-                $order = Order::create([
-                    'user_id' => Auth::user()->id,
-                    'payment_id' => $payment->id,
-                    'shipping_id' => $shipping->id,
-                    'order_total' => $total_coupon,
-                    'order_status' => OrderStatusConstant::PENDDING,
-                ]);
+                $data_order['order_total'] = $total_coupon;
+                $order = $this->orderRepository->create($data_order);
                 $coupon->quantity = $coupon->quantity - 1;
                 $coupon->save();
             } else {
-                $order = Order::create([
-                    'user_id' => Auth::user()->id,
-                    'payment_id' => $payment->id,
-                    'shipping_id' => $shipping->id,
-                    'order_total' => $total,
-                    'order_status' => OrderStatusConstant::PENDDING,
-                ]);
+                $data_order['order_total'] = $total;
+                $order = $this->orderRepository->create($data_order);
             }
-
-            foreach ($carts as $item) {
-                OrderDetail::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'product_name' => $item->name,
-                    'product_price' => $item->price,
-                    'product_quantity' => $item->quantity,
-                    'product_size' => $item->size,
-                    'product_color' => $item->color,
-                ]);
-
-                $del_cart = Cart::find($item->id);
-                $del_cart->delete();
-            }
-            $request->session()->put('cartCount', 0);
-            $orderCount = Order::where('user_id', '=', Auth::user()->id)->count();
-            $request->session()->put('orderCount', $orderCount);
-
-            return redirect("/order-complete");
         }
+
+        foreach ($carts as $item) {
+            $data_orderDetail = [];
+            $data_orderDetail['order_id'] = $order->id;
+            $data_orderDetail['product_id'] = $item->product_id;
+            $data_orderDetail['product_name'] = $item->name;
+            $data_orderDetail['product_price'] = $item->price;
+            $data_orderDetail['product_quantity'] = $item->quantity;
+            $data_orderDetail['product_size'] = $item->size;
+            $data_orderDetail['product_color'] = $item->color;
+
+            $this->orderdetailRepository->store($data_orderDetail);
+
+            $this->cartRepository->delete($item->id);
+        }
+
+        $request->session()->put('cartCount', 0);
+        $orderCount = $this->orderRepository->countOrder();
+        $request->session()->put('orderCount', $orderCount);
+
+        return redirect("/order-complete");
     }
 }

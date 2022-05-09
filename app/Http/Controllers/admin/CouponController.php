@@ -45,7 +45,8 @@ class CouponController extends Controller
      */
     public function store(CreateCouponRequest $request)
     {
-        $this->couponRepository->store($request);
+        $data = $request->all();
+        $this->couponRepository->store($data);
         $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('admin/coupons');
@@ -84,7 +85,8 @@ class CouponController extends Controller
      */
     public function update(UpdateCouponRequest $request, $id)
     {
-        $this->couponRepository->update($request, $id);
+        $data = $request->all();
+        $this->couponRepository->update($id, $$data);
 
         $request->session()->flash('success', __('messages.update.success'));
 

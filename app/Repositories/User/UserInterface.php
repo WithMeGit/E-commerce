@@ -2,24 +2,15 @@
 
 namespace App\Repositories\User;
 
-interface UserInterface
+use App\Repositories\RepositoryInterface;
+
+interface UserInterface extends RepositoryInterface
 {
-
-    public function getAll();
-
-    public function store($request);
-
-    public function update($request, $id);
-
-    public function find($id);
-
     public function login($request);
 
     public function register($request);
 
     public function logout($request);
-
-    public function getCategoryActive();
 
     public function getShipping();
 

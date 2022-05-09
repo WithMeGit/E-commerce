@@ -2,13 +2,21 @@
 
 namespace App\Repositories\Order;
 
-interface OrderInterface
+use App\Repositories\RepositoryInterface;
+
+interface OrderInterface extends RepositoryInterface
 {
+    public function create($data);
+
     public function getOrderWithUser();
+
+    public function getOrderWithUserLogged();
 
     public function getAllUser();
 
     public function getOrderWithShipping($id);
+
+    public function getOrderWithShippingLogged($id);
 
     public function getListOrderDetail($id);
 
@@ -18,5 +26,5 @@ interface OrderInterface
 
     public function updateOrder($request, $id);
 
-    public function find($id);
+    public function countOrder();
 }

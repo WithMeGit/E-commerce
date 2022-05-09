@@ -5,7 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Jobs\JobSendEmailNotification;
 use App\Repositories\Product\ProductInterface;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -56,7 +58,18 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-        $this->productRepository->store($request);
+        $data = $request->all();
+        $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+            'folder' => 'shop'
+        ])->getSecurePath();
+        $data['image'] = $uploadedFileUrl;
+        $this->productRepository->store($data);
+
+        $userList = $this->productRepository->getAllCustomer();
+
+        foreach ($userList as $key => $user) {
+            JobSendEmailNotification::dispatch($user->email);
+        }
 
         $request->session()->flash('success', __('messages.create.success'));
 
@@ -107,7 +120,14 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, $id)
     {
-        $this->productRepository->update($request, $id);
+        $data = $request->all();
+        if ($request->image != null) {
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                'folder' => 'shop'
+            ])->getSecurePath();
+            $data['image'] = $uploadedFileUrl;
+        }
+        $this->productRepository->update($id, $data);
 
         $request->session()->flash('success', __('messages.update.success'));
 

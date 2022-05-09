@@ -304,7 +304,7 @@
             <!-- products -->
         @else
             <div class="col-span-3">
-                <div>khong co san pham nao la {{ $namesearch }}</div>
+                <div>Not found {{ $namesearch }}</div>
             </div>
         @endif
 

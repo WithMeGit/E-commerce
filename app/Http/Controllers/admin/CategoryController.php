@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Repositories\Category\CategoryInterface;
+use App\Repositories\Category\CategoryRepository;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CategoryController extends Controller
 {
@@ -45,7 +47,13 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request)
     {
-        $this->categoryRepository->store($request);
+        $data = $request->all();
+        $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+            'folder' => 'shop'
+        ])->getSecurePath();
+
+        $data['image'] = $uploadedFileUrl;
+        $this->categoryRepository->store($data);
 
         $request->session()->flash('success', __('messages.create.success'));
 
@@ -84,7 +92,15 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, $id)
     {
-        $this->categoryRepository->update($request, $id);
+        $data = $request->all();
+        if ($request->image != null) {
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                'folder' => 'shop'
+            ])->getSecurePath();
+
+            $data['image'] = $uploadedFileUrl;
+        }
+        $this->categoryRepository->update($id, $data);
 
         $request->session()->flash('success', __('messages.update.success'));
 

@@ -36,7 +36,7 @@
                 @else
                     <form action="/carts" method="post">
                         @csrf()
-                        <input type="hidden" name="product_id" value="{{ $wishlist->idProduct }}">
+                        <input type="hidden" name="product_id" value="{{ $wishlist->product_id }}">
                         <input type="hidden" name="check_wishlist" value="1">
                         <input type="hidden" name="wishlist_id" value="{{ $wishlist->id }}">
                         <input type="hidden" name="quantity" value="1">

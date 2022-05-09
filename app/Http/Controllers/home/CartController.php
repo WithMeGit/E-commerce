@@ -3,106 +3,102 @@
 namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
-use App\Models\Coupon;
-use App\Models\Products;
-use App\Models\WishList;
+use App\Repositories\Cart\CartInterface;
+use App\Repositories\Product\ProductInterface;
+use App\Repositories\Wishlist\WishListInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    protected $cartRepository;
+    protected $productRepository;
+    protected $wishlistRepository;
+
+    public function __construct(
+        CartInterface $cartInterface,
+        ProductInterface $productInterface,
+        WishListInterface $wishListInterface
+    ) {
+        $this->cartRepository = $cartInterface;
+        $this->productRepository = $productInterface;
+        $this->wishlistRepository = $wishListInterface;
+    }
     public function index()
     {
-
-        $carts = [];
-        $total = 0;
-        $cartCount = null;
-        $wishlistCount = null;
-
         if (Auth::user()) {
-            $carts = Cart::where('user_id', '=', Auth::user()->id)->get();
-            $cartsMap = collect($carts)->map(function ($cart) use (&$total) {
-                $product = Products::where('id', '=', $cart->product_id)->first();
-                $cart->quantityProduct = $product->quantity;
-                $cart->subTotal = $cart->price * $cart->quantity;
-                $total += $cart->subTotal;
-                return $cart;
-            });
+            $this->cartRepository->countItem(request());
         }
 
-        return view("app.carts")->with(['cartList' => $carts, 'total' => $total]);
+        $total = 0;
+        $carts = $this->cartRepository->getCartWithuserLogged();
+        collect($carts)->map(function ($cart) use (&$total) {
+            $product = $this->cartRepository->getProductInCart($cart->product_id);
+            $cart->quantityProduct = $product->quantity;
+            $cart->subTotal = $cart->price * $cart->quantity;
+            $total += $cart->subTotal;
+            return $cart;
+        });
+
+        $category = $this->cartRepository->getCategoryActive();
+
+        return view("app.carts")->with(['cartList' => $carts, 'total' => $total, 'categoryList' => $category]);
     }
 
     public function create(Request $request)
     {
 
-        $product = Products::find($request->product_id);
+        $product = $this->productRepository->find($request->product_id);
 
-        $check_cart = Cart::where('user_id', Auth::user()->id)->where('name', $product->name)->first();
-        $cart = new Cart();
+        $check_cart = $this->cartRepository->getCartWithuserLoggedByProductName($product->name);
+
         if ($check_cart) {
             $check_cart->size = $request->size;
             $check_cart->color = $request->color;
-            $check_cart->quantity = $check_cart->quantity + $request->quantity;
+            $check_cart->quantity = $request->quantity;
             if ($check_cart->quantity > $product->quantity) {
                 $check_cart->quantity = $product->quantity;
             }
             $check_cart->save();
+            return redirect('/carts');
         } else {
-            $cart->user_id = Auth::user()->id;
-            $cart->product_id = $product->id;
-            $cart->name = $product->name;
-            $cart->price = $product->promotion_price;
-            $cart->image = $product->image;
-            $cart->status = 0;
-            $cart->size = $request->size;
-            $cart->color = $request->color;
-            $cart->quantity = $request->quantity;
-            $cart->save();
+            $cart = [];
+            $cart['user_id'] = Auth::user()->id;
+            $cart['product_id'] = $product->id;
+            $cart['name'] = $product->name;
+            $cart['price'] = $product->promotion_price;
+            $cart['image'] = $product->image;
+            $cart['status'] = 0;
+            $cart['size'] = $request->size;
+            $cart['color'] = $request->color;
+            $cart['quantity'] = $request->quantity;
+            $this->cartRepository->store($cart);
         }
 
         if ($request->check_wishlist == true) {
-            $wishlist = WishList::find($request->wishlist_id);
-            $wishlist->delete();
-
-            $wishlistCount = WishList::where('user_id', '=', Auth::user()->id)->count();
-            $request->session()->put('wishlistCount', $wishlistCount);
+            if ($this->wishlistRepository->delete($request->wishlist_id == true)) {
+                $wishlistCount = $this->wishlistRepository->CountWishList();
+                $request->session()->put('wishlistCount', $wishlistCount);
+            }
         }
-        $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
+        $cartCount = $this->cartRepository->countCart();
         $request->session()->put('cartCount', $cartCount);
 
         return redirect()->back();
     }
 
-    public function update(Request $request, $id)
-    {
-        $cart = Cart::find($id);
-        $cart->quantity = $request->quantity;
-        $cart->save();
-
-        return $cart;
-    }
-
     public function destroy(Request $request, $id)
     {
-        $cart = Cart::find($id);
-        $cart->delete();
+        if ($this->cartRepository->delete($id) == true) {
+            $cartCount = $this->cartRepository->countCart();
+            $request->session()->put('cartCount', $cartCount);
 
-        $cartCount = Cart::where('user_id', '=', Auth::user()->id)->count();
-        $request->session()->put('cartCount', $cartCount);
-
-        return redirect('/carts');
+            return redirect('/carts');
+        }
     }
 
     public function applyCoupon(Request $request)
     {
-        $coupon = Coupon::select('code')->get();
-        foreach ($coupon as $key => $item) {
-            if ($request->coupon == $item->code) {
-                return 1;
-            }
-        }
-        return 0;
+        return $this->cartRepository->checkCoupon($request->coupon);
     }
 }

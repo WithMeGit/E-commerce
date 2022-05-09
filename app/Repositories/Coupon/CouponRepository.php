@@ -3,42 +3,17 @@
 namespace App\Repositories\Coupon;
 
 use App\Models\Coupon;
+use App\Repositories\BaseRepository;
 
-class CouponRepository implements CouponInterface
+class CouponRepository extends BaseRepository implements CouponInterface
 {
-    public $coupon;
-
-    public function __construct(Coupon $coupon)
+    public function __construct(Coupon $model)
     {
-        $this->coupon = $coupon;
-    }
-    public function getAll()
-    {
-        return $this->coupon->paginate(5);
+        $this->model = $model;
     }
 
-    public function store($request)
+    public function getCouponByName($name_coupon)
     {
-        $this->coupon::create($request->all());
-    }
-
-    public function update($request, $id)
-    {
-        $coupon = $this->coupon->find($id);
-        $coupon->code = $request->code;
-        $coupon->value = $request->value;
-        $coupon->quantity = $request->quantity;
-        $coupon->save();
-    }
-
-    public function find($id)
-    {
-        return $this->coupon->find($id);
-    }
-
-    public function delete($id)
-    {
-        $this->coupon->find($id)->delete($id);
-        return TRUE;
+        return Coupon::where('code', '=', $name_coupon)->first();
     }
 }

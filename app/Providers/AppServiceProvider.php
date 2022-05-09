@@ -12,10 +12,18 @@ use App\Repositories\Coupon\CouponInterface;
 use App\Repositories\Coupon\CouponRepository;
 use App\Repositories\Order\OrderInterface;
 use App\Repositories\Order\OrderRepository;
+use App\Repositories\Orderdetail\OrderdetailInterface;
+use App\Repositories\Orderdetail\OrderdetailRepository;
+use App\Repositories\Payment\PaymentInterface;
+use App\Repositories\Payment\PaymentRepository;
 use App\Repositories\Product\ProductInterface;
 use App\Repositories\Product\ProductRepository;
+use App\Repositories\Shipping\ShippingInterface;
+use App\Repositories\Shipping\ShippingRepository;
 use App\Repositories\User\UserInterface;
 use App\Repositories\User\userRepository;
+use App\Repositories\Wishlist\WishListInterface;
+use App\Repositories\Wishlist\WishlistRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,7 +35,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 
     /**
@@ -37,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // $this->app->singleton(CategoryInterface::class, CategoryRepository::class);
         $this->app->bind(CategoryInterface::class, CategoryRepository::class);
         $this->app->bind(BrandInterface::class, BrandRepository::class);
         $this->app->bind(ProductInterface::class, ProductRepository::class);
@@ -44,5 +52,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(OrderInterface::class, OrderRepository::class);
         $this->app->bind(CouponInterface::class, CouponRepository::class);
         $this->app->bind(UserInterface::class, userRepository::class);
+        $this->app->bind(WishListInterface::class, WishlistRepository::class);
+        $this->app->bind(ShippingInterface::class, ShippingRepository::class);
+        $this->app->bind(PaymentInterface::class, PaymentRepository::class);
+        $this->app->bind(OrderdetailInterface::class, OrderdetailRepository::class);
     }
 }

@@ -38,7 +38,6 @@ Route::middleware(['auth'])->group(function () {
     //carts
     Route::get('/carts', [\App\Http\Controllers\home\CartController::class, 'index']);
     Route::post('/carts', [\App\Http\Controllers\home\CartController::class, 'create']);
-    Route::post('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'update']);
     Route::delete('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'destroy']);
     Route::post('/applycoupon', [\App\Http\Controllers\home\CartController::class, 'applyCoupon']);
 

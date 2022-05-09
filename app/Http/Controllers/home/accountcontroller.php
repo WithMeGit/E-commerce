@@ -6,28 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ManageAddressRequest;
 use App\Http\Requests\UpdateChangePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
-use App\Repositories\Brand\BrandInterface;
 use App\Repositories\User\UserInterface;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
     protected $userRepository;
-    protected $brandRepository;
 
-    public function __construct(UserInterface $userInterface, BrandInterface $brandInterface)
+    public function __construct(UserInterface $userInterface)
     {
         $this->userRepository = $userInterface;
-        $this->brandRepository = $brandInterface;
     }
 
     public function index()
     {
-        $cate = $this->brandRepository->getAllCategory();
-        dd($cate);
         $category = $this->userRepository->getCategoryActive();
+        if (Auth::user()) {
+            $this->userRepository->countItem(request());
+        }
 
         $shipping = $this->userRepository->getShipping();
         $user = $this->userRepository->getUser();
+
+        if (Auth::user()) {
+            $this->userRepository->countItem(request());
+        }
         if ($shipping) {
             return view("app.account")->with(['categoryList' => $category, 'shipping' => $shipping, 'user' => $user]);
         }

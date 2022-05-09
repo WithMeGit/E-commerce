@@ -9,51 +9,20 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\UserDetail;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class userRepository implements UserInterface
+class userRepository extends BaseRepository implements UserInterface
 {
 
-    public $user;
-
-    public function __construct(User $user)
+    public function __construct(User $model)
     {
-        $this->user = $user;
-    }
-
-    public function getAll()
-    {
-        return $this->user->paginate(5);
-    }
-
-    public function store($request)
-    {
-        $input = $request->all();
-        $input['password'] = hash::make($input['password']);
-        $this->user::create($input);
-    }
-
-    public function update($request, $id)
-    {
-        $user = $this->user->find($id);
-        $input = $request->all();
-        $input['password'] = hash::make($input['password']);
-        $user->name = $input['name'];
-        $user->email = $input['email'];
-        $user->password = $input['password'];
-        $user->role = $input['role'];
-
-        $user->save();
-    }
-
-    public function find($id)
-    {
-        return $this->user->find($id);
+        $this->model = $model;
     }
 
     public function login($request)
     {
-        $loginData = $this->user->where('email', '=', $request->email)->first();
+        $loginData = $this->model->where('email', '=', $request->email)->first();
         if (!$loginData) {
             return 2;
         } else {
@@ -71,18 +40,13 @@ class userRepository implements UserInterface
         $input = $request->all();
         $input['role'] = 1;
         $input['password'] = hash::make($input['password']);
-        $user = $this->user->create($input);
+        $user = $this->model->create($input);
         Auth::login($user, true);
     }
 
     public function logout($request)
     {
         Auth::logout();
-    }
-
-    public function getCategoryActive()
-    {
-        return Category::all()->where('active', '=', 1);
     }
 
     public function getShipping()
@@ -102,46 +66,29 @@ class userRepository implements UserInterface
 
     public function updateManageAddress($request)
     {
+        $data = $request->all();
         $shipping = $this->getShipping();
         if ($shipping) {
-
-            $shipping->name = $request->name;
-            $shipping->email = $request->email;
-            $shipping->phone = $request->phone;
-            $shipping->address = $request->address;
-            $shipping->save();
+            $shipping->update($data);
         } else {
 
-            $shipping = Shipping::create([
-                'user_id' => Auth::user()->id,
-                'name' => $request->name,
-                'address' => $request->address,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'type' => ShippingTypeContant::HOME_DELIVERY,
-            ]);
+            $data['user_id'] = Auth::user()->id;
+            $data['type'] = ShippingTypeContant::HOME_DELIVERY;
+            $shipping = Shipping::create($data);
         }
     }
 
     public function updateProfile($request)
     {
+        $data = $request->all();
         $user = $this->getUser();
         $userdetail = $this->getUserDetail();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->save();
+        $user->update($data);
         if ($userdetail) {
-            $userdetail->birthday = $request->birthday;
-            $userdetail->gender = $request->gender;
-            $userdetail->phone = $request->phone;
-            $userdetail->save();
+            $userdetail->update($data);
         } else {
-            UserDetail::create([
-                'user_id' => Auth::user()->id,
-                'birthday' => $request->birthday,
-                'gender' => $request->gender,
-                'phone' => $request->phone,
-            ]);
+            $data['user_id'] = Auth::user()->id;
+            UserDetail::create($data);
         }
     }
 

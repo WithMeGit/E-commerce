@@ -44,7 +44,8 @@ class BrandController extends Controller
      */
     public function store(CreateBrandRequest $request)
     {
-        $this->brandRepository->store($request);
+        $data = $request->all();
+        $this->brandRepository->store($data);
         $request->session()->flash('success', __('messages.create.success'));
 
         return redirect('admin/brands');
@@ -86,7 +87,8 @@ class BrandController extends Controller
      */
     public function update(UpdateBrandRequest $request, $id)
     {
-        $this->brandRepository->update($request, $id);
+        $data = $request->all();
+        $this->brandRepository->update($id, $data);
         $request->session()->flash('success', __('messages.update.success'));
 
         return redirect('admin/brands');

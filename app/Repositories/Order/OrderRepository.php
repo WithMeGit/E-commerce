@@ -7,21 +7,37 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Products;
 use App\Models\User;
+use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class OrderRepository implements OrderInterface
+class OrderRepository extends BaseRepository implements OrderInterface
 {
-    public $order;
-    public function __construct(Order $order)
+
+    public function __construct(Order $model)
     {
-        $this->order = $order;
+        $this->model = $model;
     }
+
+    public function create($data)
+    {
+        return Order::create($data);
+    }
+
     public function getOrderWithUser()
     {
-        return $this->order->join('users', 'orders.user_id', '=', 'users.id')
+        return $this->model->join('users', 'orders.user_id', '=', 'users.id')
             ->select('orders.*', 'users.name')
             ->orderBy('orders.id', 'ASC')
             ->paginate(5);
+    }
+
+    public function getOrderWithUserLogged()
+    {
+        return Order::join('users', 'orders.user_id', '=', 'users.id')
+            ->select('orders.*', 'users.name')
+            ->where('users.id', '=', Auth::user()->id)
+            ->orderBy('orders.id', 'ASC')->paginate(5);
     }
 
     public function getAllUser()
@@ -31,12 +47,21 @@ class OrderRepository implements OrderInterface
 
     public function getOrderWithShipping($id)
     {
-        return $this->order->join('shippings', 'orders.shipping_id', '=', 'shippings.id')->where('orders.id', '=', $id)->get();
+        return $this->model->join('shippings', 'orders.shipping_id', '=', 'shippings.id')
+            ->where('orders.id', '=', $id)
+            ->get();
+    }
+
+    public function getOrderWithShippingLogged($id)
+    {
+        return Order::join('shippings', 'orders.shipping_id', '=', 'shippings.id')
+            ->where('orders.id', '=', $id)
+            ->get();
     }
 
     public function getListOrderDetail($id)
     {
-        return $this->order->join('order_details', 'orders.id', '=', 'order_details.order_id')
+        return $this->model->join('order_details', 'orders.id', '=', 'order_details.order_id')
             ->select('order_details.*', DB::raw('order_details.product_price * order_details.product_quantity as total'))
             ->where('orders.id', '=', $id)
             ->orderBy('orders.id', 'ASC')
@@ -58,7 +83,7 @@ class OrderRepository implements OrderInterface
 
     public function updateOrder($request, $id)
     {
-        $order = $this->order->find($id);
+        $order = $this->find($id);
         $order->order_status = $request->value;
         $order->save();
         if ($request->ok) {
@@ -77,8 +102,8 @@ class OrderRepository implements OrderInterface
         return true;
     }
 
-    public function find($id)
+    public function countOrder()
     {
-        return $this->order->find($id);
+        return Order::where('user_id', '=', Auth::user()->id)->count();
     }
 }

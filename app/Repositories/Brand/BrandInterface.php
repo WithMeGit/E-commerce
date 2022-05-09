@@ -2,17 +2,9 @@
 
 namespace App\Repositories\Brand;
 
-interface BrandInterface
+use App\Repositories\RepositoryInterface;
+
+interface BrandInterface extends RepositoryInterface
 {
-    public function getAll();
-
     public function getAllCategory();
-
-    public function find($id);
-
-    public function store($request);
-
-    public function update($request, $id);
-
-    public function delete($id);
 }

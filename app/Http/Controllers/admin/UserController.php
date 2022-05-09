@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EditAccountRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Repositories\User\UserInterface;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -46,7 +47,9 @@ class UserController extends Controller
      */
     public function store(RegisterRequest $request)
     {
-        $this->userRepository->store($request);
+        $data = $request->all();
+        $data['password'] = hash::make($data['password']);
+        $this->userRepository->store($data);
         $request->session()->flash('success', __('messages.carete.success'));
         return redirect('admin/users');
     }
@@ -83,7 +86,10 @@ class UserController extends Controller
      */
     public function update(EditAccountRequest $request, $id)
     {
-        $this->userRepository->update($request, $id);
+
+        $data = $request->all();
+        $data['password'] = hash::make($data['password']);
+        $this->userRepository->update($id, $data);
 
         $request->session()->flash('success', __('messages.update.success'));
         return redirect('admin/users');
