@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\home;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Wishlist\WishListInterface;
+use App\Repositories\Wishlist\WishlistInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +11,7 @@ class WishListController extends Controller
 {
     protected $wishlistRepository;
 
-    public function __construct(WishListInterface $wishListInterface)
+    public function __construct(WishlistInterface $wishListInterface)
     {
         $this->wishlistRepository = $wishListInterface;
     }

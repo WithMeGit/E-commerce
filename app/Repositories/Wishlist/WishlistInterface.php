@@ -4,7 +4,7 @@ namespace App\Repositories\Wishlist;
 
 use App\Repositories\RepositoryInterface;
 
-interface WishListInterface extends RepositoryInterface
+interface WishlistInterface extends RepositoryInterface
 {
     public function getWishListWithUserLogged();
 

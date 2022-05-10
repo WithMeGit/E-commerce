@@ -5,7 +5,7 @@ namespace App\Http\Controllers\home;
 use App\Http\Controllers\Controller;
 use App\Repositories\Cart\CartInterface;
 use App\Repositories\Product\ProductInterface;
-use App\Repositories\Wishlist\WishListInterface;
+use App\Repositories\Wishlist\WishlistInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +18,7 @@ class CartController extends Controller
     public function __construct(
         CartInterface $cartInterface,
         ProductInterface $productInterface,
-        WishListInterface $wishListInterface
+        WishlistInterface $wishListInterface
     ) {
         $this->cartRepository = $cartInterface;
         $this->productRepository = $productInterface;

@@ -7,7 +7,7 @@ use App\Models\WishList;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class WishlistRepository extends BaseRepository implements WishListInterface
+class WishlistRepository extends BaseRepository implements WishlistInterface
 {
 
     public function __construct(WishList $model)
