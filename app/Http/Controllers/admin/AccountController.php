@@ -30,9 +30,9 @@ class AccountController extends Controller
     public function login(LoginRequest $request)
     {
 
-        if ($this->UserRepository->login($request) == 1) {
+        if ($this->userRepository->login($request) == 1) {
             return redirect("admin");
-        } else if ($this->UserRepository->login($request) == 2) {
+        } else if ($this->userRepository->login($request) == 2) {
             $request->session()->flash('fail', __('messages.fail.email'));
             return redirect()->back();
         } else {
@@ -43,7 +43,7 @@ class AccountController extends Controller
 
     public function logout(Request $request)
     {
-        $this->UserRepository->logout($request);
+        $this->userRepository->logout($request);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -58,7 +58,7 @@ class AccountController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $this->UserRepository->register($request);
+        $this->userRepository->register($request);
 
         return view('admin.home');
     }
