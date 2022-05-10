@@ -76,7 +76,7 @@ class CartController extends Controller
         }
 
         if ($request->check_wishlist == true) {
-            if ($this->wishlistRepository->delete($request->wishlist_id == true)) {
+            if ($this->wishlistRepository->delete($request->wishlist_id) == true) {
                 $wishlistCount = $this->wishlistRepository->CountWishList();
                 $request->session()->put('wishlistCount', $wishlistCount);
             }
