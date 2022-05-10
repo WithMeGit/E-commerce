@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/', [\App\Http\Controllers\home\homeController::class, 'index']);
-Route::post('/home', [\App\Http\Controllers\home\homeController::class, 'searchAutocomplete']);
-Route::post('/checkorder', [\App\Http\Controllers\home\homeController::class, 'checkOrder']);
-Route::get('/home', [\App\Http\Controllers\home\homeController::class, 'index']);
+Route::get('/', [\App\Http\Controllers\home\HomeController::class, 'index']);
+Route::post('/home', [\App\Http\Controllers\home\HomeController::class, 'searchAutocomplete']);
+Route::post('/checkorder', [\App\Http\Controllers\home\HomeController::class, 'checkOrder']);
+Route::get('/home', [\App\Http\Controllers\home\HomeController::class, 'index']);
 Route::get('/products', [\App\Http\Controllers\home\ProductController::class, 'index']);
 Route::get('/products/{name}', [\App\Http\Controllers\home\ProductController::class, 'show']);
 Route::post('/products', [\App\Http\Controllers\home\ProductController::class, 'searchProduct']);
