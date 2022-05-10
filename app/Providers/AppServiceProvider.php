@@ -21,7 +21,7 @@ use App\Repositories\Product\ProductRepository;
 use App\Repositories\Shipping\ShippingInterface;
 use App\Repositories\Shipping\ShippingRepository;
 use App\Repositories\User\UserInterface;
-use App\Repositories\User\userRepository;
+use App\Repositories\User\UserRepository;
 use App\Repositories\Wishlist\WishlistInterface;
 use App\Repositories\Wishlist\WishlistRepository;
 use Illuminate\Support\Facades\URL;
@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CartInterface::class, CartRepository::class);
         $this->app->bind(OrderInterface::class, OrderRepository::class);
         $this->app->bind(CouponInterface::class, CouponRepository::class);
-        $this->app->bind(UserInterface::class, userRepository::class);
+        $this->app->bind(UserInterface::class, UserRepository::class);
         $this->app->bind(WishlistInterface::class, WishlistRepository::class);
         $this->app->bind(ShippingInterface::class, ShippingRepository::class);
         $this->app->bind(PaymentInterface::class, PaymentRepository::class);

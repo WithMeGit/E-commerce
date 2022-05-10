@@ -12,7 +12,7 @@ use App\Models\UserDetail;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Auth;
 
-class userRepository extends BaseRepository implements UserInterface
+class UserRepository extends BaseRepository implements UserInterface
 {
 
     public function __construct(User $model)
