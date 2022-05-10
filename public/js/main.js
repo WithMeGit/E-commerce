@@ -151,10 +151,15 @@ channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
 
                 var li = document.createElement("li");
                 var a = document.createElement("a");
+                if (data.message == 200) {
+                    var message = "đang vận chuyển";
+                } else {
+                    var message = "đã giao";
+                }
                 a.className +=
                     "dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100";
                 a.appendChild(
-                    document.createTextNode(`Đơn hàng của bạn ${data.message}`)
+                    document.createTextNode(`Đơn hàng của bạn ${message}`)
                 );
                 li.appendChild(a);
                 Notifications.appendChild(li);

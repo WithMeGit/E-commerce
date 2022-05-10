@@ -29,7 +29,7 @@ class OrderController extends Controller
 
     public function updateOrder(Request $request, $id)
     {
-        $this->orderRepository->updateOrder($request, $id);
+        return $this->orderRepository->updateOrder($request, $id);
     }
 
     /**
