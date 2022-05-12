@@ -44,12 +44,6 @@ class CartRepository extends BaseRepository implements CartInterface
 
     public function checkCoupon($name_coupon)
     {
-        $coupon = Coupon::select('code')->get();
-        foreach ($coupon as $key => $item) {
-            if ($name_coupon == $item->code) {
-                return 1;
-            }
-        }
-        return 0;
+        return Coupon::where('code', '=', $name_coupon)->first();
     }
 }

@@ -60,7 +60,7 @@ class CheckOutController extends Controller
 
         if ($request->coupon) {
             $coupon = $this->couponRepository->getCouponByName($request->coupon);
-            if ($coupon) {
+            if ($coupon && $coupon->quantity > 0) {
                 $total = $sum - ($sum * ($coupon->value / 100));
                 if ($shippings) {
 
@@ -78,7 +78,7 @@ class CheckOutController extends Controller
                         ]);
                 }
             } else {
-                $request->session()->flash("coupon", "The discount code is incorrect");
+                $request->session()->flash("coupon", "The discount code is incorrect or unavailable");
                 return redirect()->back();
             }
         }
@@ -109,6 +109,11 @@ class CheckOutController extends Controller
             return $cart;
         });
 
+        if ($total == 0) {
+            $request->session()->flash('placeorder', __('messages.placeorder.fail'));
+            return redirect()->back();
+        }
+
         //payment
         $data_payment = [];
         $data_payment['user_id'] = Auth::user()->id;
@@ -125,10 +130,7 @@ class CheckOutController extends Controller
         $data_shipping['type'] = $request->type;
         $data_shipping['note'] = $request->note;
 
-        if ($total == 0) {
-            $request->session()->flash('placeorder', __('messages.placeorder.fail'));
-            return redirect()->back();
-        }
+
         if ($shipping) {
             $shipping->name = $request->name;
             $shipping->address = $request->address;
@@ -156,16 +158,16 @@ class CheckOutController extends Controller
                 $total_coupon = $total - ($total * ($coupon->value / 100));
 
                 $data_order['order_total'] = $total_coupon;
-                $order = $this->orderRepository->create($data_order);
+                $order = $this->orderRepository->store($data_order);
                 $coupon->quantity = $coupon->quantity - 1;
                 $coupon->save();
             } else {
                 $data_order['order_total'] = $total;
-                $order = $this->orderRepository->create($data_order);
+                $order = $this->orderRepository->store($data_order);
             }
         } else {
-            $payment = $this->paymentRepository->create($data_payment);
-            $shipping = $this->shippingRepository->create($data_shipping);
+            $payment = $this->paymentRepository->store($data_payment);
+            $shipping = $this->shippingRepository->store($data_shipping);
 
             $data_order = [];
             $data_order['user_id'] = Auth::user()->id;
@@ -177,12 +179,12 @@ class CheckOutController extends Controller
                 $coupon = $this->couponRepository->getCouponByName($request->coupon);
                 $total_coupon = $total - ($total * ($coupon->value / 100));
                 $data_order['order_total'] = $total_coupon;
-                $order = $this->orderRepository->create($data_order);
+                $order = $this->orderRepository->store($data_order);
                 $coupon->quantity = $coupon->quantity - 1;
                 $coupon->save();
             } else {
                 $data_order['order_total'] = $total;
-                $order = $this->orderRepository->create($data_order);
+                $order = $this->orderRepository->store($data_order);
             }
         }
 

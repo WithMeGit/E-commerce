@@ -16,10 +16,11 @@ class CategoryFactory extends Factory
     public function definition()
 
     {
-        // dd('enter here');
-        dd($this->faker->title);
         return [
             'name' => $this->faker->name,
+            'description' => $this->faker->text,
+            'image' => $this->faker->imageUrl($width = 640, $height = 480),
+            'active' => 1
         ];
     }
 }

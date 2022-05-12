@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Repositories\Category\CategoryInterface;
-use App\Repositories\Category\CategoryRepository;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CategoryController extends Controller

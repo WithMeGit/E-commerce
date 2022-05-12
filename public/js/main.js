@@ -108,9 +108,14 @@ $(document).ready(function () {
                 method: "POST",
                 data: { coupon: coupon },
                 success: function (res) {
-                    if (res == 1) {
-                        couponElement.classList.add("text-green-600");
-                        toastr.success("coupon is available");
+                    if (res) {
+                        if (res.quantity == 0) {
+                            couponElement.classList.add("text-red-600");
+                            toastr.warning("coupon unavailable");
+                        } else if (res.quantity != 0) {
+                            couponElement.classList.add("text-green-600");
+                            toastr.success("coupon is available");
+                        }
                     } else {
                         couponElement.classList.add("text-red-600");
                     }

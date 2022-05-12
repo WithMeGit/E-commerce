@@ -46,13 +46,13 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function store($attributes = [])
     {
-        $this->model->create($attributes);
+        return $this->model->create($attributes);
     }
 
     public function update($id, $attributes = [])
     {
         $model = $this->find($id);
-        $model->update($attributes);
+        return $model->update($attributes);
     }
 
     public function find($id)
