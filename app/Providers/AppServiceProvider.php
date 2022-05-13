@@ -26,6 +26,7 @@ use App\Repositories\Wishlist\WishlistInterface;
 use App\Repositories\Wishlist\WishlistRepository;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,7 +49,10 @@ class AppServiceProvider extends ServiceProvider
         if (env('APP_ENV') === 'production') {
             URL::forceScheme('https');
         }
-        // $this->app->singleton(CategoryInterface::class, CategoryRepository::class);
+
+        Cashier::useCustomerModel(User::class);
+
+
         $this->app->bind(CategoryInterface::class, CategoryRepository::class);
         $this->app->bind(BrandInterface::class, BrandRepository::class);
         $this->app->bind(ProductInterface::class, ProductRepository::class);
