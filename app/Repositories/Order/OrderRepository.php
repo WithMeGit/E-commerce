@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Order;
 
+use App\Constants\PaymentStatusContant;
 use App\Events\NotificationPusherEvent;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\Products;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -21,7 +23,7 @@ class OrderRepository extends BaseRepository implements OrderInterface
 
     public function create($data)
     {
-        return Order::create($data);
+        return $this->model->create($data);
     }
 
     public function getOrderWithUser()
@@ -34,7 +36,7 @@ class OrderRepository extends BaseRepository implements OrderInterface
 
     public function getOrderWithUserLogged()
     {
-        return Order::join('users', 'orders.user_id', '=', 'users.id')
+        return $this->model->join('users', 'orders.user_id', '=', 'users.id')
             ->select('orders.*', 'users.name')
             ->where('users.id', '=', Auth::user()->id)
             ->orderBy('orders.id', 'ASC')->paginate(5);
@@ -54,7 +56,7 @@ class OrderRepository extends BaseRepository implements OrderInterface
 
     public function getOrderWithShippingLogged($id)
     {
-        return Order::join('shippings', 'orders.shipping_id', '=', 'shippings.id')
+        return $this->model->join('shippings', 'orders.shipping_id', '=', 'shippings.id')
             ->where('orders.id', '=', $id)
             ->get();
     }
@@ -81,15 +83,23 @@ class OrderRepository extends BaseRepository implements OrderInterface
             ->get();
     }
 
+    public function getPaymentWithOrder($id)
+    {
+        return Payment::join('orders', 'payments.id', '=', 'orders.payment_id')
+            ->select('payments.*')
+            ->where('orders.id', '=', $id)
+            ->get();
+    }
+
     public function updateOrder($request, $id)
     {
         $order = $this->find($id);
         $order->order_status = $request->value;
         $order->save();
         if ($request->ok) {
-            $orders = $this->getOrderDetailWithOrder($id);
+            $orderdetail = $this->getOrderDetailWithOrder($id);
             $products = $this->getAllProduct();
-            foreach ($orders as $key => $order) {
+            foreach ($orderdetail as $key => $order) {
                 foreach ($products as $key => $product) {
                     if ($order->product_id == $product->id) {
                         $product->quantity = $product->quantity - $order->product_quantity;
@@ -97,6 +107,10 @@ class OrderRepository extends BaseRepository implements OrderInterface
                     }
                 }
             }
+
+            $payment = $this->getPaymentWithOrder($id);
+            $payment->status = PaymentStatusContant::PAID_SUCCESSFULLY;
+            $payment->save();
         }
         event(new NotificationPusherEvent($request->value, $order->user_id));
         return true;
@@ -104,6 +118,6 @@ class OrderRepository extends BaseRepository implements OrderInterface
 
     public function countOrder()
     {
-        return Order::where('user_id', '=', Auth::user()->id)->count();
+        return $this->model->where('user_id', '=', Auth::user()->id)->count();
     }
 }

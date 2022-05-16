@@ -31,12 +31,14 @@ class OrderController extends Controller
     {
         $order = $this->orderRepository->getOrderWithShippingLogged($id);
         $listOrderdetail = $this->orderRepository->getListOrderDetail($id);
+        $payment = $this->orderRepository->getPaymentWithOrder($id);
         $category = $this->orderRepository->getCategoryActive();
 
         return view("app.order-detail")->with([
             'listorderdetails' => $listOrderdetail,
             'orders' => $order,
-            'categoryList' => $category
+            'categoryList' => $category,
+            'payments' => $payment,
         ]);
     }
 }

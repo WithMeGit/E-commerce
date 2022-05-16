@@ -29,6 +29,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'index']);
     Route::post('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'placeOrder']);
 
+    Route::get('/payment', [\App\Http\Controllers\home\PaymentController::class, 'index']);
+
+    Route::post('/payment', [\App\Http\Controllers\home\PaymentController::class, 'payment']);
+
     Route::get('/order-complete', function () {
         $category = Category::all()->where('active', '=', 1);
         return view("app.order-complete")->with(['categoryList' => $category]);
@@ -38,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
     //carts
     Route::get('/carts', [\App\Http\Controllers\home\CartController::class, 'index']);
     Route::post('/carts', [\App\Http\Controllers\home\CartController::class, 'create']);
+    Route::post('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'update']);
     Route::delete('/carts/{id}', [\App\Http\Controllers\home\CartController::class, 'destroy']);
     Route::post('/applycoupon', [\App\Http\Controllers\home\CartController::class, 'applyCoupon']);
 

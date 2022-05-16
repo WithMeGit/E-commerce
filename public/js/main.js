@@ -43,6 +43,9 @@ function incrementQuantityCart(id, quantity) {
             data: {
                 quantity: value,
             },
+            // success: function(res){
+            //     console.log(res);
+            // }
         });
     }
     document.getElementById(`quantity_${id}`).value = value;
@@ -171,4 +174,34 @@ channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
             }
         },
     });
+});
+
+
+$(function() {
+    var $form = $(".form-payment");
+    $('form.form-payment').bind('submit', function(e) {
+        if (!$form.data('cc-on-file')) {
+          e.preventDefault();
+          Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+          Stripe.createToken({
+            number: $('#cardnumber').val(),
+            cvc: $('#cvc').val(),
+            exp_month: $('#month').val(),
+            exp_year: $('#year').val()
+          }, stripeResponseHandler);
+        }
+  });
+
+  function stripeResponseHandler(status, response) {
+        if (response.error) {
+           toastr.error(response.error.message);
+        } else {
+            /* token contains id, last4, and card type */
+            var token = response['id'];
+
+            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+            $form.get(0).submit();
+        }
+    }
+
 });

@@ -87,6 +87,13 @@ class CartController extends Controller
         return redirect()->back();
     }
 
+    public function update(Request $request, $id)
+    {
+        $cart = $this->cartRepository->find($id);
+        $cart->quantity = $request->quantity;
+        $cart->save();
+    }
+
     public function destroy(Request $request, $id)
     {
         if ($this->cartRepository->delete($id) == true) {

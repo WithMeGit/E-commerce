@@ -63,10 +63,12 @@ class OrderController extends Controller
     {
         $order = $this->orderRepository->getOrderWithShipping($id);
         $listOrderdetail = $this->orderRepository->getListOrderDetail($id);
+        $payment = $this->orderRepository->getPaymentWithOrder($id);
 
         return view("admin.view-order")->with([
             'listorderdetails' => $listOrderdetail,
-            'orders' => $order
+            'orders' => $order,
+            'payments' => $payment,
         ]);
     }
 

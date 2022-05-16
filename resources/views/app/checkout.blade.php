@@ -67,21 +67,57 @@
                         </div>
                         @if (isset($payment))
                             <div>
-                                <div class="mb-3 xl:w-96">
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                        type="radio" name="method" value="100"
+                                        {{ $payment->method == '100' ? 'checked' : '' }}>
+                                    <label class="form-check-label inline-block text-gray-800" for="method">
+                                        thanh toán khi nhận hàng
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                        type="radio" name="method" value="200"
+                                        {{ $payment->method == '200' ? 'checked' : '' }}>
+                                    <label class="form-check-label inline-block text-gray-800" for="method">
+                                        chuyển khoản
+                                    </label>
+                                </div>
+                                {{-- <div class="mb-3 xl:w-96">
                                     <select name="method"
                                         class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                         aria-label="Default select example">
                                         <option value="100" {{ $payment->method == '100' ? 'selected' : '' }}>thanh
                                             toán
                                             khi nhận hàng</option>
-                                        <option value="200" {{ $payment->method == '200' ? 'selected' : '' }}>
+                                        <option onclick="payment()" value="200"
+                                            {{ $payment->method == '200' ? 'selected' : '' }}>
                                             chuyển khoản
                                         </option>
                                     </select>
-                                </div>
+                                </div> --}}
                             </div>
                         @else
                             <div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                        type="radio" name="method" value="100" checked>
+                                    <label class="form-check-label inline-block text-gray-800" for="method">
+                                        thanh toán khi nhận hàng
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                        type="radio" name="method" value="200">
+                                    <label class="form-check-label inline-block text-gray-800" for="method">
+                                        chuyển khoản
+                                    </label>
+                                </div>
+                                {{-- <div>
                                 <div class="mb-3 xl:w-96">
                                     <select name="method"
                                         class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -90,7 +126,7 @@
                                         <option value="200">chuyển khoản</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                         @endif
 
                         <div class="mb-3 xl:w-96">
@@ -150,14 +186,30 @@
                             </div>
                         </div>
                         <div>
-                            <div class="mb-3 xl:w-96">
-                                <select name="method"
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                    type="radio" name="method" value="100" checked>
+                                <label class="form-check-label inline-block text-gray-800" for="method">
+                                    thanh toán khi nhận hàng
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                    type="radio" name="method" value="200">
+                                <label class="form-check-label inline-block text-gray-800" for="method">
+                                    chuyển khoản
+                                </label>
+                            </div>
+                            {{-- <div class="mb-3 xl:w-96">
+                                <select id="payment" name="method"
                                     class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
                                     <option value="100" selected>thanh toán khi nhận hàng</option>
                                     <option value="200">chuyển khoản</option>
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="mb-3 xl:w-96">
                             <label for="exampleFormControlTextarea1"

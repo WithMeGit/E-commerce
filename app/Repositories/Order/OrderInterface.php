@@ -22,6 +22,8 @@ interface OrderInterface extends RepositoryInterface
 
     public function getOrderDetailWithOrder($id);
 
+    public function getPaymentWithOrder($id);
+
     public function getAllProduct();
 
     public function updateOrder($request, $id);

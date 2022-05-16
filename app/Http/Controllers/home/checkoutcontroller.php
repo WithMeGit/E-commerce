@@ -96,6 +96,7 @@ class CheckOutController extends Controller
 
     public function placeOrder(PlaceOrderRequest $request)
     {
+        $category = $this->cartRepository->getCategoryActive();
         $carts = [];
         $total = 0;
         $carts = $this->cartRepository->getCartWithuserLogged();
@@ -130,7 +131,17 @@ class CheckOutController extends Controller
         $data_shipping['type'] = $request->type;
         $data_shipping['note'] = $request->note;
 
-
+        if ($request->method == 200) {
+            if ($request->coupon) {
+                $coupon = $this->couponRepository->getCouponByName($request->coupon);
+                $total_coupon = $total - ($total * ($coupon->value / 100));
+                $request->session()->put('total', $total_coupon);
+                return view('app.payment')->with(['categoryList' => $category, 'request' => $request->all()]);
+            } else {
+                $request->session()->put('total', $total);
+                return view('app.payment')->with(['categoryList' => $category, 'request' => $request->all()]);
+            }
+        }
         if ($shipping) {
             $shipping->name = $request->name;
             $shipping->address = $request->address;
@@ -139,13 +150,8 @@ class CheckOutController extends Controller
             $shipping->type = $request->type;
             $shipping->note = $request->note;
             $shipping->save();
-            if ($payment) {
-                $payment->method = $request->method;
-                $payment->status = PaymentStatusContant::PENDDING_PAYMENT;
-                $payment->save();
-            } else {
-                $payment = $this->paymentRepository->store($data_payment);
-            }
+
+            $payment = $this->paymentRepository->store($data_payment);
 
             $data_order = [];
             $data_order['user_id'] = Auth::user()->id;
