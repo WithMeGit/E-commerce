@@ -32,7 +32,7 @@ class HomeController extends Controller
 
     public function searchAutocomplete(Request $request)
     {
-        $data = $this->productRepository->searchProduct($request);
+        $data = $this->productRepository->searchProduct($request->search_name);
 
         $output = '<ul class="z-50 absolute mt-12 w-9/12 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">';
         foreach ($data as $item) {

@@ -86,14 +86,14 @@ class ProductRepository extends BaseRepository implements ProductInterface
             ->paginate(6);
     }
 
-    public function getProductByName($request)
+    public function getProductByName($search_name)
     {
-        return $this->model->where('name', 'like', "%{$request->search_name}%")->paginate(6);
+        return $this->model->where('name', 'like', "%{$search_name}%")->paginate(6);
     }
 
-    public function checkProductByName($request)
+    public function checkProductByName($search_name)
     {
-        return $this->model->where('name', 'like', "%{$request->search_name}%")->first();
+        return $this->model->where('name', 'like', "%{$search_name}%")->first();
     }
 
     public function countBrand()
@@ -106,9 +106,9 @@ class ProductRepository extends BaseRepository implements ProductInterface
         return Category::withCount('products')->where('active', '=', 1)->get();
     }
 
-    public function searchProduct($request)
+    public function searchProduct($search_name)
     {
-        return $this->model->where("name", 'like', "%{$request->search_name}%")
+        return $this->model->where("name", 'like', "%{$search_name}%")
             ->select('id', 'name')
             ->get();
     }

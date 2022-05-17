@@ -28,13 +28,13 @@ interface ProductInterface extends RepositoryInterface
 
     public function getProductByBrandName($name);
 
-    public function getProductByName($request);
+    public function getProductByName($search_name);
 
-    public function checkProductByName($request);
+    public function checkProductByName($search_name);
 
     public function countBrand();
 
     public function countCategory();
 
-    public function searchProduct($request);
+    public function searchProduct($search_name);
 }

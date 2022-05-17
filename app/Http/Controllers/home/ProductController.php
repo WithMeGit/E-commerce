@@ -59,9 +59,9 @@ class ProductController extends Controller
 
         $brand = $this->productRepository->countBrand();
 
-        $check_name_product = $this->productRepository->checkProductByName($request);
+        $check_name_product = $this->productRepository->checkProductByName($request->search_name);
         if ($check_name_product) {
-            $products = $this->productRepository->getProductByName($request);
+            $products = $this->productRepository->getProductByName($request->search_name);
             return view("app.products")->with(['productList' => $products, 'categoryList' => $category, 'brandList' => $brand]);
         } else {
             return view("app.products")->with(['namesearch' => $request->search_name, 'categoryList' => $category, 'brandList' => $brand]);

@@ -43,9 +43,6 @@ function incrementQuantityCart(id, quantity) {
             data: {
                 quantity: value,
             },
-            // success: function(res){
-            //     console.log(res);
-            // }
         });
     }
     document.getElementById(`quantity_${id}`).value = value;
@@ -126,6 +123,114 @@ $(document).ready(function () {
             });
         }
     });
+
+    var cardnumber = document.getElementById('cardnumber');
+    if(cardnumber){
+        cardnumber.addEventListener("keydown", function(e) {
+            const txt = this.value;
+            if ((txt.length == 19 || e.which == 32) & e.which !== 8) e.preventDefault();
+            if ((txt.length == 4 || txt.length == 9 || txt.length == 14) && e.which !== 8)
+              this.value = this.value + " ";
+          });
+    }
+
+
+    var payment_onl = document.getElementById("payment_onl");
+
+    var payment_off = document.getElementById("payment_off");
+
+    var divPaymentBanking = document.getElementById('payment_banking');
+
+    var divPaymentCard = document.getElementById('payment_card');
+    payment_off.onclick = function(){
+
+        if(divPaymentBanking){
+            divPaymentBanking.style.display = 'none';
+            $("#nameoncard").removeAttr('required');
+            $("#cardnumber").removeAttr('required');
+            $("#cvc").removeAttr('required');
+    
+            $('form.form-payment').unbind();
+        }
+
+        if(divPaymentCard){
+            divPaymentCard.style.display = 'none';
+            $('form.form-payment').unbind();
+            // $('#customer_card').value = null;
+        }
+
+      
+    }
+
+    payment_onl.onclick = function(){
+ 
+        if(divPaymentBanking)
+        {
+            divPaymentBanking.style.display = "block";
+
+            $("#cardnumber").attr('required', '');
+            $("#nameoncard").attr('required', '');
+            $("#cvc").attr('required', '');
+
+            $(function() {
+                var $form = $(".form-payment");
+                $('form.form-payment').bind('submit', function(e) {
+                    if (!$form.data('cc-on-file')) {
+                    e.preventDefault();
+                    Stripe.setPublishableKey($form.data('stripe-publishable-key'));
+                    //   cardElement = {number: $('#cardnumber').val(), cvc: $('#cvc').val(),exp_month: $('#month').val(),exp_year: $('#year').val() }
+                    Stripe.createToken({
+                        number: $('#cardnumber').val(),
+                        cvc: $('#cvc').val(),
+                        exp_month: $('#month').val(),
+                        exp_year: $('#year').val()
+                    }, stripeResponseHandler);
+                    // Stripe.createPaymentMethod({
+                    //         type: 'card',
+                    //         card: cardElement,
+                    //         billing_details: {
+                    //         name: $('#nameoncard').val(),
+                    //         },
+                    //     })
+                    //     .then(function(result) {
+                    //         console.log(result);
+                    //     });
+                    }
+            });
+            
+            function stripeResponseHandler(status, response) {
+                    if (response.error) {
+                    toastr.error(response.error.message);
+                    } else {
+                        var token = response['id'];
+            
+                        $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+                        $form.get(0).submit();
+                    }
+                }
+            });
+        }
+
+        if(divPaymentCard){
+            divPaymentCard.style.display = 'block';
+            // $(function() {
+            //     var $form = $(".form-payment");
+            //     $('form.form-payment').bind('submit', function(e) {
+            //         $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
+            //         $form.get(0).submit();
+            //     });
+            // })
+        }
+    }
+    if(divPaymentCard){
+        $(function() {
+            var $form = $(".form-payment");
+            $('form.form-payment').bind('submit', function(e) {
+                $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
+                $form.get(0).submit();
+            });
+        })
+    }
 });
 
 var pusher = new Pusher("7f59a70c770ed9504939", {
@@ -176,32 +281,3 @@ channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
     });
 });
 
-
-$(function() {
-    var $form = $(".form-payment");
-    $('form.form-payment').bind('submit', function(e) {
-        if (!$form.data('cc-on-file')) {
-          e.preventDefault();
-          Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-          Stripe.createToken({
-            number: $('#cardnumber').val(),
-            cvc: $('#cvc').val(),
-            exp_month: $('#month').val(),
-            exp_year: $('#year').val()
-          }, stripeResponseHandler);
-        }
-  });
-
-  function stripeResponseHandler(status, response) {
-        if (response.error) {
-           toastr.error(response.error.message);
-        } else {
-            /* token contains id, last4, and card type */
-            var token = response['id'];
-
-            $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
-            $form.get(0).submit();
-        }
-    }
-
-});

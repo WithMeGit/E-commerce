@@ -14,7 +14,8 @@
     <div class="container lg:grid grid-cols-12 gap-6 items-start pb-16 pt-4">
         <!-- checkout form -->
         <div class="lg:col-span-8 border border-gray-200 px-4 py-4 rounded">
-            <form action="/checkout" method="POST">
+            <form id="form" ole="form" action="/checkout" method="POST" class="form-payment" data-cc-on-file="false"
+            data-stripe-publishable-key="{{ env('STRIPE_KEY')}}">
                 @csrf()
                 @if (isset($coupon))
                     <input type="hidden" name="coupon" value="{{ $coupon->code }}" />
@@ -68,7 +69,7 @@
                         @if (isset($payment))
                             <div>
                                 <div class="form-check">
-                                    <input
+                                    <input id="payment_off"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="100"
                                         {{ $payment->method == '100' ? 'checked' : '' }}>
@@ -77,7 +78,7 @@
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input
+                                    <input id="payment_onl"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="200"
                                         {{ $payment->method == '200' ? 'checked' : '' }}>
@@ -85,24 +86,88 @@
                                         chuyển khoản
                                     </label>
                                 </div>
-                                {{-- <div class="mb-3 xl:w-96">
-                                    <select name="method"
-                                        class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                        aria-label="Default select example">
-                                        <option value="100" {{ $payment->method == '100' ? 'selected' : '' }}>thanh
-                                            toán
-                                            khi nhận hàng</option>
-                                        <option onclick="payment()" value="200"
-                                            {{ $payment->method == '200' ? 'selected' : '' }}>
-                                            chuyển khoản
-                                        </option>
-                                    </select>
-                                </div> --}}
+                                @if(isset($users))
+                                    <div id="payment_card" >
+                                        <div class="mb-4 mt-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        ************ {{$users->pm_last_four}}
+                                    </div>
+                                @else
+                                    <div id="payment_banking" style="display: none">
+                                        <h3 class="text-lg font-medium capitalize mb-4">
+                                            Payment
+                                        </h3>
+                                        <div class="mb-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Name on card <span class="text-primary">*</span>
+                                                </label>
+                                                <input type="text" id="nameoncard" class="input-box" name="nameoncard">
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Card number <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cardnumber" class="input-box" name="cardnumber" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57"
+                                                        placeholder="0000 0000 0000 0000">
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Cvc <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cvc" class="input-box" name="cvc" placeholder="123" maxlength="3" 
+                                                        ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57">
+                                                </div>
+                        
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Expiration date
+                                                    </label>
+                                                    <select id="month" class="input-box" name="month">
+                                                        <option value="01">01 - January</option>
+                                                        <option value="02">02 - February</option>
+                                                        <option value="03">03 - March</option>
+                                                        <option value="04">04 - April</option>
+                                                        <option value="05">05 - May</option>
+                                                        <option value="06">06 - June</option>
+                                                        <option value="07">07 - July</option>
+                                                        <option value="08">08 - August</option>
+                                                        <option value="09">09 - September</option>
+                                                        <option value="10">10 - October</option>
+                                                        <option value="11">11 - November</option>
+                                                        <option value="12">12 - December</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Year
+                                                    </label>
+                                                    <select id="year" class="input-box" name="year">
+                                                        <option value="2023">2023</option>
+                                                        <option value="2024">2024</option>
+                                                        <option value="2025">2025</option>
+                                                        <option value="2026">2026</option>
+                                                        <option value="2027">2027</option>
+                                                        <option value="2028">2028</option>
+                                                        <option value="2029">2029</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @else
                             <div>
                                 <div class="form-check">
-                                    <input
+                                    <input id="payment_off"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="100" checked>
                                     <label class="form-check-label inline-block text-gray-800" for="method">
@@ -110,23 +175,91 @@
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input
+                                    <input id="payment_onl"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="200">
                                     <label class="form-check-label inline-block text-gray-800" for="method">
                                         chuyển khoản
                                     </label>
                                 </div>
-                                {{-- <div>
-                                <div class="mb-3 xl:w-96">
-                                    <select name="method"
-                                        class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                        aria-label="Default select example">
-                                        <option value="100" selected>thanh toán khi nhận hàng</option>
-                                        <option value="200">chuyển khoản</option>
-                                    </select>
-                                </div>
-                            </div> --}}
+                                @if(isset($users))
+                                    <div id="payment_card" >
+                                        <div class="mb-4 mt-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        ************ {{$users->pm_last_four}}
+                                    </div>
+                                @else
+                                    <div id="payment_banking" style="display: none">
+                                        <h3 class="text-lg font-medium capitalize mb-4">
+                                            Payment
+                                        </h3>
+                                        <div class="mb-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Name on card <span class="text-primary">*</span>
+                                                </label>
+                                                <input type="text" id="nameoncard" class="input-box" name="nameoncard">
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Card number <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cardnumber" class="input-box" name="cardnumber" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57"
+                                                        placeholder="0000 0000 0000 0000">
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Cvc <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cvc" class="input-box" name="cvc" placeholder="123" maxlength="3" 
+                                                        ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57">
+                                                </div>
+                        
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Expiration date
+                                                    </label>
+                                                    <select id="month" class="input-box" name="month">
+                                                        <option value="01">01 - January</option>
+                                                        <option value="02">02 - February</option>
+                                                        <option value="03">03 - March</option>
+                                                        <option value="04">04 - April</option>
+                                                        <option value="05">05 - May</option>
+                                                        <option value="06">06 - June</option>
+                                                        <option value="07">07 - July</option>
+                                                        <option value="08">08 - August</option>
+                                                        <option value="09">09 - September</option>
+                                                        <option value="10">10 - October</option>
+                                                        <option value="11">11 - November</option>
+                                                        <option value="12">12 - December</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Year
+                                                    </label>
+                                                    <select id="year" class="input-box" name="year">
+                                                        <option value="2023">2023</option>
+                                                        <option value="2024">2024</option>
+                                                        <option value="2025">2025</option>
+                                                        <option value="2026">2026</option>
+                                                        <option value="2027">2027</option>
+                                                        <option value="2028">2028</option>
+                                                        <option value="2029">2029</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         @endif
 
                         <div class="mb-3 xl:w-96">
@@ -134,7 +267,7 @@
                                 class="form-label inline-block mb-2 text-gray-700">Shipping
                                 Order</label>
                             <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                id="exampleFormControlTextarea1" rows="9"
+                                id="exampleFormControlTextarea1" rows="3"
                                 placeholder="Notes about your order, Special Notes for Delivery">{{ $shipping->note }}</textarea>
                         </div>
                         <div class="mb-3 xl:w-96">
@@ -187,7 +320,7 @@
                         </div>
                         <div>
                             <div class="form-check">
-                                <input
+                                <input id="payment_off"
                                     class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                     type="radio" name="method" value="100" checked>
                                 <label class="form-check-label inline-block text-gray-800" for="method">
@@ -195,28 +328,97 @@
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input
+                                <input id="payment_onl"
                                     class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                     type="radio" name="method" value="200">
                                 <label class="form-check-label inline-block text-gray-800" for="method">
                                     chuyển khoản
                                 </label>
                             </div>
-                            {{-- <div class="mb-3 xl:w-96">
-                                <select id="payment" name="method"
-                                    class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                    aria-label="Default select example">
-                                    <option value="100" selected>thanh toán khi nhận hàng</option>
-                                    <option value="200">chuyển khoản</option>
-                                </select>
-                            </div> --}}
+                                @if(isset($users))
+                                    <div id="payment_card" >
+                                        <div class="mb-4 mt-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        ************ {{$users->pm_last_four}}
+                                    </div>
+                                @else
+                                    <div id="payment_banking" style="display: none">
+                                        <h3 class="text-lg font-medium capitalize mb-4">
+                                            Payment
+                                        </h3>
+                                        <div class="mb-4">
+                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png" class="h-5">
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Name on card <span class="text-primary">*</span>
+                                                </label>
+                                                <input type="text" id="nameoncard" class="input-box" name="nameoncard">
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Card number <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cardnumber" class="input-box" name="cardnumber" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57"
+                                                        placeholder="0000 0000 0000 0000">
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Cvc <span class="text-primary">*</span>
+                                                    </label>
+                                                    <input type="text" id="cvc" class="input-box" name="cvc" placeholder="123" maxlength="3" 
+                                                        ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57">
+                                                </div>
+                        
+                                            </div>
+                                            <div class="grid sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Expiration date
+                                                    </label>
+                                                    <select id="month" class="input-box" name="month">
+                                                        <option value="01">01 - January</option>
+                                                        <option value="02">02 - February</option>
+                                                        <option value="03">03 - March</option>
+                                                        <option value="04">04 - April</option>
+                                                        <option value="05">05 - May</option>
+                                                        <option value="06">06 - June</option>
+                                                        <option value="07">07 - July</option>
+                                                        <option value="08">08 - August</option>
+                                                        <option value="09">09 - September</option>
+                                                        <option value="10">10 - October</option>
+                                                        <option value="11">11 - November</option>
+                                                        <option value="12">12 - December</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="text-gray-600 mb-2 block">
+                                                        Year
+                                                    </label>
+                                                    <select id="year" class="input-box" name="year">
+                                                        <option value="2023">2023</option>
+                                                        <option value="2024">2024</option>
+                                                        <option value="2025">2025</option>
+                                                        <option value="2026">2026</option>
+                                                        <option value="2027">2027</option>
+                                                        <option value="2028">2028</option>
+                                                        <option value="2029">2029</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                         </div>
                         <div class="mb-3 xl:w-96">
                             <label for="exampleFormControlTextarea1"
                                 class="form-label inline-block mb-2 text-gray-700">Shipping
                                 Order</label>
                             <textarea name="note" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                                id="exampleFormControlTextarea1" rows="9"
+                                id="exampleFormControlTextarea1" rows="3"
                                 placeholder="Notes about your order, Special Notes for Delivery"></textarea>
                         </div>
                         <div class="mb-3 xl:w-96">
