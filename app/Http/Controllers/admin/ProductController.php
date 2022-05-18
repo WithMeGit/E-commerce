@@ -11,7 +11,6 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
-
     protected $productRepository;
 
     public function __construct(ProductInterface $productInterface)
@@ -58,7 +57,6 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-        dd($request->all());
         $data = $request->all();
         $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
             'folder' => 'shop'
