@@ -69,6 +69,7 @@ function shipping(value, ok, url) {
         data: { value, ok },
         url: url,
         success: function (res) {
+            console.log(res);
             if (res === 1) {
                 location.reload();
             }

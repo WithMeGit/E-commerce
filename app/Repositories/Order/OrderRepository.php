@@ -91,6 +91,14 @@ class OrderRepository extends BaseRepository implements OrderInterface
             ->get();
     }
 
+    public function getPayment($id)
+    {
+        return Payment::join('orders', 'payments.id', '=', 'orders.payment_id')
+            ->select('payments.*')
+            ->where('orders.id', '=', $id)
+            ->first();
+    }
+
     public function updateOrder($request, $id)
     {
         $order = $this->find($id);
@@ -108,10 +116,11 @@ class OrderRepository extends BaseRepository implements OrderInterface
                 }
             }
 
-            $payment = $this->getPaymentWithOrder($id);
+            $payment = $this->getPayment($id);
             $payment->status = PaymentStatusContant::PAID_SUCCESSFULLY;
             $payment->save();
         }
+
         event(new NotificationPusherEvent($request->value, $order->user_id));
         return true;
     }

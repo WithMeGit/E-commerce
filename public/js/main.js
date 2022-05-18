@@ -149,7 +149,7 @@ $(document).ready(function () {
             $("#nameoncard").removeAttr('required');
             $("#cardnumber").removeAttr('required');
             $("#cvc").removeAttr('required');
-    
+
             $('form.form-payment').unbind();
         }
 
@@ -158,11 +158,11 @@ $(document).ready(function () {
             $('form.form-payment').unbind();
         }
 
-      
+
     }
 
     payment_onl.onclick = function(){
- 
+
         if(divPaymentBanking)
         {
             divPaymentBanking.style.display = "block";
@@ -185,13 +185,13 @@ $(document).ready(function () {
                     }, stripeResponseHandler);
                     }
             });
-            
+
             function stripeResponseHandler(status, response) {
                     if (response.error) {
                     toastr.error(response.error.message);
                     } else {
                         var token = response['id'];
-            
+
                         $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
                         $form.get(0).submit();
                     }
@@ -227,7 +227,6 @@ var pusher = new Pusher("7f59a70c770ed9504939", {
 
 var channel = pusher.subscribe("notification");
 channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
-    console.log(data.message);
     $.ajax({
         method: "POST",
         dataType: "JSON",
