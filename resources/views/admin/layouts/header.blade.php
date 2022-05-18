@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Tailwind Starter Template - Day Admin Template: Tailwind Toolbox</title>
+    <title>Admin Shop Shose</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://res.cloudinary.com/carternguyen/image/upload/v1652011623/shop/favicon_fh2khy.ico">
     <meta name="description" content="description here">
     <meta name="keywords" content="keywords,here">
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -12,8 +12,10 @@ use App\Repositories\Order\OrderInterface;
 use App\Repositories\Orderdetail\OrderdetailInterface;
 use App\Repositories\Payment\PaymentInterface;
 use App\Repositories\Shipping\ShippingInterface;
+use App\Repositories\User\UserInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Stripe;
 
 class CheckOutController extends Controller
 {
@@ -23,6 +25,7 @@ class CheckOutController extends Controller
     protected $couponRepository;
     protected $shippingRepository;
     protected $paymentRepository;
+    protected $userRepository;
 
     public function __construct(
         OrderInterface $orderInterface,
@@ -30,7 +33,8 @@ class CheckOutController extends Controller
         CartInterface $cartInterface,
         CouponInterface $couponInterface,
         ShippingInterface $shippingInterface,
-        PaymentInterface $paymentInterface
+        PaymentInterface $paymentInterface,
+        UserInterface $userInterface
     ) {
         $this->orderRepository = $orderInterface;
         $this->orderdetailRepository = $orderdetailInterface;
@@ -38,6 +42,7 @@ class CheckOutController extends Controller
         $this->couponRepository = $couponInterface;
         $this->shippingRepository = $shippingInterface;
         $this->paymentRepository = $paymentInterface;
+        $this->userRepository = $userInterface;
     }
     public function index(Request $request)
     {
@@ -45,6 +50,7 @@ class CheckOutController extends Controller
         $sum = 0;
         $total = 0;
         $category = $this->orderRepository->getCategoryActive();
+        $user = $this->userRepository->getUser();
         if (Auth::user()) {
             $this->orderRepository->countItem(request());
         }
@@ -57,25 +63,40 @@ class CheckOutController extends Controller
             $sum += $cart->subTotal;
             return $cart;
         });
-
         if ($request->coupon) {
             $coupon = $this->couponRepository->getCouponByName($request->coupon);
             if ($coupon && $coupon->quantity > 0) {
                 $total = $sum - ($sum * ($coupon->value / 100));
                 if ($shippings) {
-
-                    return view("app.checkout")
-                        ->with([
-                            'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
-                            'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
-                            'payment' => $payments
-                        ]);
+                    if (Auth::user()->stripe_id != null) {
+                        return view("app.checkout")
+                            ->with([
+                                'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                                'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
+                                'payment' => $payments, 'users' => $user
+                            ]);
+                    } else {
+                        return view("app.checkout")
+                            ->with([
+                                'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                                'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
+                                'payment' => $payments
+                            ]);
+                    }
                 } else {
-                    return view("app.checkout")
-                        ->with([
-                            'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
-                            'sum' => $sum, 'categoryList' => $category
-                        ]);
+                    if (Auth::user()->stripe_id != null) {
+                        return view("app.checkout")
+                            ->with([
+                                'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                                'sum' => $sum, 'categoryList' => $category, 'users' => $user
+                            ]);
+                    } else {
+                        return view("app.checkout")
+                            ->with([
+                                'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
+                                'sum' => $sum, 'categoryList' => $category
+                            ]);
+                    }
                 }
             } else {
                 $request->session()->flash("coupon", "The discount code is incorrect or unavailable");
@@ -84,19 +105,34 @@ class CheckOutController extends Controller
         }
 
         if ($shippings) {
-
+            if (Auth::user()->stripe_id != null) {
+                // dd($user);
+                return view("app.checkout")->with([
+                    'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
+                    'shipping' => $shippings, 'payment' => $payments, 'users' => $user
+                ]);
+            } else {
+                // dd($user);
+                return view("app.checkout")->with([
+                    'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
+                    'shipping' => $shippings, 'payment' => $payments
+                ]);
+            }
             return view("app.checkout")->with([
                 'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
-                'shipping' => $shippings, 'payment' => $payments
+                'shipping' => $shippings, 'payment' => $payments, 'users' => $user
             ]);
         } else {
-            return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category]);
+            if (Auth::user()->stripe_id != null) {
+                return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category, 'users' => $user]);
+            } else {
+                return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category]);
+            }
         }
     }
 
     public function placeOrder(PlaceOrderRequest $request)
     {
-        $category = $this->cartRepository->getCategoryActive();
         $carts = [];
         $total = 0;
         $carts = $this->cartRepository->getCartWithuserLogged();
@@ -131,15 +167,55 @@ class CheckOutController extends Controller
         $data_shipping['type'] = $request->type;
         $data_shipping['note'] = $request->note;
 
-        if ($request->method == 200) {
+        if ($request->stripeToken) {
+            $data_payment['status'] = PaymentStatusContant::PAID_SUCCESSFULLY;
+            Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            $customer = Stripe\Customer::create(array("source" => $request->stripeToken, "description" => $request->nameoncard));
             if ($request->coupon) {
                 $coupon = $this->couponRepository->getCouponByName($request->coupon);
                 $total_coupon = $total - ($total * ($coupon->value / 100));
-                $request->session()->put('total', $total_coupon);
-                return view('app.payment')->with(['categoryList' => $category, 'request' => $request->all()]);
+                $charge = Stripe\Charge::create([
+                    "amount" => $total_coupon,
+                    "currency" => "vnd",
+                    "customer" => $customer->id,
+                ]);
+                $user = $this->userRepository->getUser();
+                $user->stripe_id = $customer->id;
+                $user->pm_last_four = $charge->source->last4;
+                $user->save();
             } else {
-                $request->session()->put('total', $total);
-                return view('app.payment')->with(['categoryList' => $category, 'request' => $request->all()]);
+                $charge = Stripe\Charge::create([
+                    "amount" => $total,
+                    "currency" => "vnd",
+                    "customer" => $customer->id,
+                ]);
+                $user = $this->userRepository->getUser();
+                $user->stripe_id = $customer->id;
+                $user->pm_last_four = $charge->source->last4;
+                $user->save();
+            }
+        }
+
+        if ($request->customer_card) {
+            $data_payment['status'] = PaymentStatusContant::PAID_SUCCESSFULLY;
+            Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $customer_card = $this->userRepository->getUser();
+
+            if ($request->coupon) {
+                $coupon = $this->couponRepository->getCouponByName($request->coupon);
+                $total_coupon = $total - ($total * ($coupon->value / 100));
+                Stripe\Charge::create([
+                    "amount" => $total_coupon,
+                    "currency" => "vnd",
+                    "customer" => $customer_card->stripe_id,
+                ]);
+            } else {
+                Stripe\Charge::create([
+                    "amount" => $total,
+                    "currency" => "vnd",
+                    "customer" => $customer_card->stripe_id,
+                ]);
             }
         }
         if ($shipping) {

@@ -34,7 +34,7 @@ class CheckOutController extends Controller
         CouponInterface $couponInterface,
         ShippingInterface $shippingInterface,
         PaymentInterface $paymentInterface,
-        UserInterface $userInterface,
+        UserInterface $userInterface
     ) {
         $this->orderRepository = $orderInterface;
         $this->orderdetailRepository = $orderdetailInterface;

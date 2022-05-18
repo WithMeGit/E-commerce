@@ -54,18 +54,20 @@
                 </div>
                 <div class="form-group mb-6">
                     <input type="text"
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57 && event.charCode == 46'
                         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         name="promotion_price" required value="{{ $editproduct->promotion_price }}"
                         placeholder="Promotion Price Product">
                 </div>
                 <div class="form-group mb-6">
                     <input type="text"
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57 && event.charCode == 46'
                         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         name="original_price" required value="{{ $editproduct->original_price }}"
                         placeholder="Original Price Product">
                 </div>
                 <div class="form-group mb-6">
-                    <input type="text"
+                    <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                         name="quantity" required value="{{ $editproduct->quantity }}" placeholder="Quantity Product">
                 </div>
@@ -182,16 +184,18 @@
                     </div>
                     <div class="form-group mb-6">
                         <input type="text"
+                            onkeypress='return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46'
                             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             name="promotion_price" required placeholder="Promotion Price Product">
                     </div>
                     <div class="form-group mb-6">
                         <input type="text"
+                            onkeypress='return event.charCode >= 48 && event.charCode <= 57 && event.charCode == 46'
                             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             name="original_price" required placeholder="Original Price Product">
                     </div>
                     <div class="form-group mb-6">
-                        <input type="text"
+                        <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                             name="quantity" required placeholder="Quantity Product">
                     </div>

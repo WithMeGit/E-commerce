@@ -80,4 +80,12 @@ function viewOrder(url) {
     window.location.href = url;
 }
 
-$(document).ready(function () {});
+$(document).ready(function () {
+    // var handleInputPrice = document.getElementById('price');
+
+    // handleInputPrice.addEventListener("keydown", function(e){
+    //     const txt = this.value;
+    //     if ((txt.length == 3 || txt.length == 7 || txt.length == ) && e.which !== 8)
+    //           this.value = this.value + ".";
+    // });
+});
