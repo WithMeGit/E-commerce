@@ -58,6 +58,7 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
+        dd($request->all());
         $data = $request->all();
         $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
             'folder' => 'shop'

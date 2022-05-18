@@ -86,7 +86,7 @@ class CouponController extends Controller
     public function update(UpdateCouponRequest $request, $id)
     {
         $data = $request->all();
-        $this->couponRepository->update($id, $$data);
+        $this->couponRepository->update($id, $data);
 
         $request->session()->flash('success', __('messages.update.success'));
 

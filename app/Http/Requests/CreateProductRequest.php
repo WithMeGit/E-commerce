@@ -29,9 +29,9 @@ class CreateProductRequest extends FormRequest
             'brand_id' => 'required',
             'description' => 'required',
             'image' => 'image|required|mimes:jpeg,png,jpg',
-            'promotion_price' => 'required|numeric',
-            'original_price' => 'required|numeric',
-            'quantity' => 'required|numeric',
+            'promotion_price' => 'required',
+            'original_price' => 'required',
+            'quantity' => 'required',
         ];
     }
 }
