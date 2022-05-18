@@ -133,6 +133,7 @@ class CheckOutController extends Controller
 
     public function placeOrder(PlaceOrderRequest $request)
     {
+        dd($request->all());
         $carts = [];
         $total = 0;
         $carts = $this->cartRepository->getCartWithuserLogged();

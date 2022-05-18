@@ -156,7 +156,6 @@ $(document).ready(function () {
         if(divPaymentCard){
             divPaymentCard.style.display = 'none';
             $('form.form-payment').unbind();
-            // $('#customer_card').value = null;
         }
 
       
@@ -178,23 +177,12 @@ $(document).ready(function () {
                     if (!$form.data('cc-on-file')) {
                     e.preventDefault();
                     Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-                    //   cardElement = {number: $('#cardnumber').val(), cvc: $('#cvc').val(),exp_month: $('#month').val(),exp_year: $('#year').val() }
                     Stripe.createToken({
                         number: $('#cardnumber').val(),
                         cvc: $('#cvc').val(),
                         exp_month: $('#month').val(),
                         exp_year: $('#year').val()
                     }, stripeResponseHandler);
-                    // Stripe.createPaymentMethod({
-                    //         type: 'card',
-                    //         card: cardElement,
-                    //         billing_details: {
-                    //         name: $('#nameoncard').val(),
-                    //         },
-                    //     })
-                    //     .then(function(result) {
-                    //         console.log(result);
-                    //     });
                     }
             });
             
@@ -213,13 +201,13 @@ $(document).ready(function () {
 
         if(divPaymentCard){
             divPaymentCard.style.display = 'block';
-            // $(function() {
-            //     var $form = $(".form-payment");
-            //     $('form.form-payment').bind('submit', function(e) {
-            //         $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
-            //         $form.get(0).submit();
-            //     });
-            // })
+            $(function() {
+                var $form = $(".form-payment");
+                $('form.form-payment').bind('submit', function(e) {
+                    $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
+                    $form.get(0).submit();
+                });
+            })
         }
     }
     if(divPaymentCard){
