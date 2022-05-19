@@ -4,6 +4,7 @@ namespace App\Http\Controllers\home;
 
 use App\Constants\OrderStatusConstant;
 use App\Constants\PaymentStatusContant;
+use App\Events\MessagePusherEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlaceOrderRequest;
 use App\Repositories\Cart\CartInterface;
@@ -288,6 +289,8 @@ class CheckOutController extends Controller
         $request->session()->put('cartCount', 0);
         $orderCount = $this->orderRepository->countOrder();
         $request->session()->put('orderCount', $orderCount);
+
+        event(new MessagePusherEvent(Auth::user()->name, 'order success'));
 
         return redirect("/order-complete");
     }

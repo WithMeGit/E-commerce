@@ -16,6 +16,8 @@ interface UserInterface extends RepositoryInterface
 
     public function getUser();
 
+    public function getAllUser();
+
     public function getUserDetail();
 
     public function updateManageAddress($request);

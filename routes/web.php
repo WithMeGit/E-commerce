@@ -60,6 +60,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [\App\Http\Controllers\home\WishListController::class, 'index']);
     Route::post('/wishlist', [\App\Http\Controllers\home\WishListController::class, 'create']);
     Route::delete('/wishlist/{id}', [\App\Http\Controllers\home\WishListController::class, 'destroy']);
+
+    //chat
+    Route::get('/chat', [\App\Http\Controllers\home\ChatController::class, 'index']);
 });
 
 
@@ -97,4 +100,7 @@ Route::middleware(['admin'])->group(function () {
     //coupon
     Route::resource('/admin/coupons', \App\Http\Controllers\admin\CouponController::class);
     Route::post('/admin/coupons/{id}', [App\Http\Controllers\admin\CouponController::class, 'update']);
+
+    //chat
+    Route::get('admin/chat', [\App\Http\Controllers\admin\ChatController::class, 'index']);
 });

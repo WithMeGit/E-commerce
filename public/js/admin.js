@@ -90,3 +90,12 @@ $(document).ready(function () {
     //           this.value = this.value + ".";
     // });
 });
+
+var pusher = new Pusher("7f59a70c770ed9504939", {
+    cluster: "ap1",
+});
+
+var channel = pusher.subscribe("message");
+channel.bind("App\\Events\\MessagePusherEvent", function (data) {
+    toastr.success(`${data.username} vừa mới đặt hàng`);
+});

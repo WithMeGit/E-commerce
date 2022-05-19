@@ -59,6 +59,11 @@ class UserRepository extends BaseRepository implements UserInterface
         return User::where('id', '=', Auth::user()->id)->first();
     }
 
+    public function getAllUser()
+    {
+        return User::where('role', '=', '0')->get();
+    }
+
     public function getUserDetail()
     {
         return UserDetail::where('user_id', '=', Auth::user()->id)->first();
