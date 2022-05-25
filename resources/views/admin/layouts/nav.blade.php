@@ -93,12 +93,12 @@
                                 <i class="fas fa-truck"></i></i><span class="pb-1 md:pb-0 text-sm"> Order</span>
                             </a>
                         </li>
-                        <li class="mr-6 my-2 md:my-0">
+                        {{-- <li class="mr-6 my-2 md:my-0">
                             <a href="/admin/carts"
                                 class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-pink-500">
                                 <i class="fas fa-shopping-cart"></i><span class="pb-1 md:pb-0 text-sm"> Carts</span>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="mr-6 my-2 md:my-0">
                             <a href="/admin/coupons"
                                 class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-pink-500">

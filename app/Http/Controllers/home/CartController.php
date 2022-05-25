@@ -92,6 +92,16 @@ class CartController extends Controller
         $cart = $this->cartRepository->find($id);
         $cart->quantity = $request->quantity;
         $cart->save();
+        $total = 0;
+        $carts = $this->cartRepository->getCartWithuserLogged();
+        collect($carts)->map(function ($cart) use (&$total) {
+            $product = $this->cartRepository->getProductInCart($cart->product_id);
+            $cart->quantityProduct = $product->quantity;
+            $cart->subTotal = $cart->price * $cart->quantity;
+            $total += $cart->subTotal;
+            return $cart;
+        });
+        return ['total' => $total, 'cart' => $cart];
     }
 
     public function destroy(Request $request, $id)
@@ -106,6 +116,20 @@ class CartController extends Controller
 
     public function applyCoupon(Request $request)
     {
-        return $this->cartRepository->checkCoupon($request->coupon);
+        $sum = 0;
+        $total = 0;
+        $carts = $this->cartRepository->getCartWithuserLogged();
+        collect($carts)->map(function ($cart) use (&$sum) {
+            $cart->subTotal = $cart->price * $cart->quantity;
+            $sum += $cart->subTotal;
+            return $cart;
+        });
+        $coupon = $this->cartRepository->checkCoupon($request->coupon);
+        if ($coupon) {
+            $total = $sum - ($sum * ($coupon->value / 100));
+            return ['total' => $total, 'data' => $coupon, 'coupon' => true];
+        } else {
+            return ['total' => $sum, 'coupon' => false];
+        }
     }
 }

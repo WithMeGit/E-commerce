@@ -6,7 +6,7 @@
             <i class="fas fa-home"></i>
         </a>
         <span class="text-sm text-gray-400"><i class="fas fa-chevron-right"></i></span>
-        <p class="text-gray-600 font-medium uppercase">checkout</p>
+        <p class="text-gray-600 font-medium uppercase">Checkout</p>
     </div>
     <!-- breadcrum end -->
 
@@ -57,11 +57,11 @@
                                 <select name="type"
                                     class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
-                                    <option value="100" {{ $shipping->type == '100' ? 'selected' : '' }}>
+                                    <option value="100" {{ $shipping->type == 100 ? 'selected' : '' }}>
                                         ship tận nhà</option>
-                                    <option value="200" {{ $shipping->type == '200' ? 'selected' : '' }}>
+                                    <option value="200" {{ $shipping->type == 200 ? 'selected' : '' }}>
                                         ship tới địa chỉ khác</option>
-                                    <option value="300" {{ $shipping->type == '300' ? 'selected' : '' }}>
+                                    <option value="300" {{ $shipping->type == 300 ? 'selected' : '' }}>
                                         ship hàng thu tiền hộ</option>
                                 </select>
                             </div>
@@ -72,7 +72,7 @@
                                     <input id="payment_off"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="100"
-                                        {{ $payment->method == '100' ? 'checked' : '' }}>
+                                        {{ $payment->method == 100 ? 'checked' : '' }}>
                                     <label class="form-check-label inline-block text-gray-800" for="method">
                                         thanh toán khi nhận hàng
                                     </label>
@@ -81,7 +81,7 @@
                                     <input id="payment_onl"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                         type="radio" name="method" value="200"
-                                        {{ $payment->method == '200' ? 'checked' : '' }}>
+                                        {{ $payment->method == 200 ? 'checked' : '' }}>
                                     <label class="form-check-label inline-block text-gray-800" for="method">
                                         chuyển khoản
                                     </label>

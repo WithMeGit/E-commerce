@@ -43,6 +43,17 @@ function incrementQuantityCart(id, quantity) {
             data: {
                 quantity: value,
             },
+            success: function (res) {
+                var total = document.getElementById("total");
+                var total_1 = document.getElementById("total_1");
+
+                total.innerHTML = res.total.toLocaleString("en-US") + " VNĐ";
+                total_1.innerHTML = res.total.toLocaleString("en-US") + " VNĐ";
+
+                var subTotal = document.getElementById(`subTotal_${id}`);
+                var sum = res.cart.quantity * res.cart.price;
+                subTotal.innerHTML = sum.toLocaleString("en-US") + " VNĐ";
+            },
         });
     }
     document.getElementById(`quantity_${id}`).value = value;
@@ -61,6 +72,17 @@ function decreaseQuantityCart(id) {
             url: `/carts/${id}`,
             data: {
                 quantity: value,
+            },
+            success: function (res) {
+                var total = document.getElementById("total");
+                var total_1 = document.getElementById("total_1");
+
+                total.innerHTML = res.total.toLocaleString("en-US") + " VNĐ";
+                total_1.innerHTML = res.total.toLocaleString("en-US") + " VNĐ";
+
+                var subTotal = document.getElementById(`subTotal_${id}`);
+                var sum = res.cart.quantity * res.cart.price;
+                subTotal.innerHTML = sum.toLocaleString("en-US") + " VNĐ";
             },
         });
     }
@@ -101,6 +123,7 @@ $(document).ready(function () {
 
     $("#coupon").keyup(function () {
         var couponElement = document.getElementById("coupon");
+        var discount = document.getElementById("discount");
         var coupon = $(this).val();
         if (coupon != "") {
             $.ajax({
@@ -108,15 +131,33 @@ $(document).ready(function () {
                 method: "POST",
                 data: { coupon: coupon },
                 success: function (res) {
-                    if (res) {
-                        if (res.quantity == 0) {
+                    if (res.coupon === true) {
+                        if (res.data.quantity === 0) {
+                            couponElement.classList.remove("text-green-600");
                             couponElement.classList.add("text-red-600");
+                            discount.style.display = "none";
                             toastr.warning("coupon unavailable");
-                        } else if (res.quantity != 0) {
+                        } else if (res.data.quantity != 0) {
+                            couponElement.classList.remove("text-red-600");
                             couponElement.classList.add("text-green-600");
-                            toastr.success("coupon is available");
+                            discount.style.display = "block";
+                            var code = document.getElementById("code");
+                            var value = document.getElementById("value");
+                            code.innerHTML = "Mã code: " + res.data.code;
+                            value.innerHTML =
+                                "Discount " + res.data.value + "%";
+                            var total = document.getElementById("total");
+                            total.innerHTML =
+                                res.total.toLocaleString("en-US") + " VNĐ";
                         }
-                    } else {
+                    }
+
+                    if (res.coupon === false) {
+                        var total = document.getElementById("total");
+                        total.innerHTML =
+                            res.total.toLocaleString("en-US") + " VNĐ";
+                        discount.style.display = "none";
+                        couponElement.classList.remove("text-green-600");
                         couponElement.classList.add("text-red-600");
                     }
                 },
@@ -124,100 +165,111 @@ $(document).ready(function () {
         }
     });
 
-    var cardnumber = document.getElementById('cardnumber');
-    if(cardnumber){
-        cardnumber.addEventListener("keydown", function(e) {
+    var cardnumber = document.getElementById("cardnumber");
+    if (cardnumber) {
+        cardnumber.addEventListener("keydown", function (e) {
             const txt = this.value;
-            if ((txt.length == 19 || e.which == 32) & e.which !== 8) e.preventDefault();
-            if ((txt.length == 4 || txt.length == 9 || txt.length == 14) && e.which !== 8)
-              this.value = this.value + " ";
-          });
+            if ((txt.length == 19 || e.which == 32) & (e.which !== 8))
+                e.preventDefault();
+            if (
+                (txt.length == 4 || txt.length == 9 || txt.length == 14) &&
+                e.which !== 8
+            )
+                this.value = this.value + " ";
+        });
     }
-
 
     var payment_onl = document.getElementById("payment_onl");
 
     var payment_off = document.getElementById("payment_off");
 
-    var divPaymentBanking = document.getElementById('payment_banking');
+    var divPaymentBanking = document.getElementById("payment_banking");
 
-    var divPaymentCard = document.getElementById('payment_card');
-    payment_off.onclick = function(){
+    var divPaymentCard = document.getElementById("payment_card");
+    payment_off.onclick = function () {
+        if (divPaymentBanking) {
+            divPaymentBanking.style.display = "none";
+            $("#nameoncard").removeAttr("required");
+            $("#cardnumber").removeAttr("required");
+            $("#cvc").removeAttr("required");
 
-        if(divPaymentBanking){
-            divPaymentBanking.style.display = 'none';
-            $("#nameoncard").removeAttr('required');
-            $("#cardnumber").removeAttr('required');
-            $("#cvc").removeAttr('required');
-
-            $('form.form-payment').unbind();
+            $("form.form-payment").unbind();
         }
 
-        if(divPaymentCard){
-            divPaymentCard.style.display = 'none';
-            $('form.form-payment').unbind();
+        if (divPaymentCard) {
+            divPaymentCard.style.display = "none";
+            $("form.form-payment").unbind();
         }
+    };
 
-
-    }
-
-    payment_onl.onclick = function(){
-
-        if(divPaymentBanking)
-        {
+    payment_onl.onclick = function () {
+        if (divPaymentBanking) {
             divPaymentBanking.style.display = "block";
 
-            $("#cardnumber").attr('required', '');
-            $("#nameoncard").attr('required', '');
-            $("#cvc").attr('required', '');
+            $("#cardnumber").attr("required", "");
+            $("#nameoncard").attr("required", "");
+            $("#cvc").attr("required", "");
 
-            $(function() {
+            $(function () {
                 var $form = $(".form-payment");
-                $('form.form-payment').bind('submit', function(e) {
-                    if (!$form.data('cc-on-file')) {
-                    e.preventDefault();
-                    Stripe.setPublishableKey($form.data('stripe-publishable-key'));
-                    Stripe.createToken({
-                        number: $('#cardnumber').val(),
-                        cvc: $('#cvc').val(),
-                        exp_month: $('#month').val(),
-                        exp_year: $('#year').val()
-                    }, stripeResponseHandler);
+                $("form.form-payment").bind("submit", function (e) {
+                    if (!$form.data("cc-on-file")) {
+                        e.preventDefault();
+                        Stripe.setPublishableKey(
+                            $form.data("stripe-publishable-key")
+                        );
+                        Stripe.createToken(
+                            {
+                                number: $("#cardnumber").val(),
+                                cvc: $("#cvc").val(),
+                                exp_month: $("#month").val(),
+                                exp_year: $("#year").val(),
+                            },
+                            stripeResponseHandler
+                        );
                     }
-            });
+                });
 
-            function stripeResponseHandler(status, response) {
+                function stripeResponseHandler(status, response) {
                     if (response.error) {
-                    toastr.error(response.error.message);
+                        toastr.error(response.error.message);
                     } else {
-                        var token = response['id'];
+                        var token = response["id"];
 
-                        $form.append("<input type='hidden' name='stripeToken' value='" + token + "'/>");
+                        $form.append(
+                            "<input type='hidden' name='stripeToken' value='" +
+                                token +
+                                "'/>"
+                        );
                         $form.get(0).submit();
                     }
                 }
             });
         }
 
-        if(divPaymentCard){
-            divPaymentCard.style.display = 'block';
-            $(function() {
+        if (divPaymentCard) {
+            divPaymentCard.style.display = "block";
+            $(function () {
                 var $form = $(".form-payment");
-                $('form.form-payment').bind('submit', function(e) {
-                    $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
+                $("form.form-payment").bind("submit", function (e) {
+                    $form.append(
+                        "<input type='hidden' name='customer_card' value='avaiable'/>"
+                    );
                     $form.get(0).submit();
                 });
-            })
+            });
         }
-    }
-    if(divPaymentCard){
-        $(function() {
+    };
+    if (divPaymentCard) {
+        $(function () {
             var $form = $(".form-payment");
-            $('form.form-payment').bind('submit', function(e) {
-                $form.append("<input type='hidden' name='customer_card' value='avaiable'/>");
+            $("form.form-payment").bind("submit", function (e) {
+                $form.append(
+                    "<input type='hidden' name='customer_card' value='avaiable'/>"
+                );
                 $form.get(0).submit();
             });
-        })
+        });
     }
 });
 
@@ -267,4 +319,3 @@ channel.bind("App\\Events\\NotificationPusherEvent", function (data) {
         },
     });
 });
-

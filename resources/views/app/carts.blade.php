@@ -119,7 +119,8 @@
                         </div>
                         <!-- cart quantity end -->
                         <div class="ml-auto md:ml-0">
-                            <p class="text-primary text-lg font-semibold">{{ number_format($cart->subTotal) }} VNĐ</p>
+                            <p id="subTotal_{{ $cart->id }}" class="text-primary text-lg font-semibold">
+                                {{ number_format($cart->subTotal) }} VNĐ</p>
                         </div>
                         <div class="text-gray-600 hover:text-primary cursor-pointer">
                             <a href="/products/detail/{{ $cart->product_id }}"><i class="fas fa-edit"></i></a>
@@ -144,7 +145,7 @@
             <div class="space-y-1 text-gray-600 pb-3 border-b border-gray-200">
                 <div class="flex justify-between font-medium">
                     <p>Subtotal</p>
-                    <p>{{ number_format($total) }} VNĐ</p>
+                    <p id="total_1">{{ number_format($total) }} VNĐ</p>
                 </div>
                 <div class="flex justify-between">
                     <p>Delivery</p>
@@ -157,7 +158,12 @@
             </div>
             <div class="flex justify-between my-3 text-gray-800 font-semibold uppercase">
                 <h4>Total</h4>
-                <h4>{{ number_format($total) }} VNĐ</h4>
+                <h4 id="total">{{ number_format($total) }} VNĐ</h4>
+            </div>
+            <div id="discount" class="flex justify-between my-3 text-gray-800 font-semibold uppercase"
+                style="display: none">
+                <h4 id="code"></h4>
+                <h4 id="value"></h4>
             </div>
             <form action="/checkout" method="GET">
                 <div class="flex mb-5">

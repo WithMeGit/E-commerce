@@ -107,13 +107,11 @@ class CheckOutController extends Controller
 
         if ($shippings) {
             if (Auth::user()->stripe_id != null) {
-                // dd($user);
                 return view("app.checkout")->with([
                     'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
                     'shipping' => $shippings, 'payment' => $payments, 'users' => $user
                 ]);
             } else {
-                // dd($user);
                 return view("app.checkout")->with([
                     'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
                     'shipping' => $shippings, 'payment' => $payments
