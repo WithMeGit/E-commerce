@@ -66,13 +66,12 @@
                                 </select>
                             </div>
                         </div>
-                        @if (isset($payment))
-                            <div>
+                        <div>
+                            @if (isset($users))
                                 <div class="form-check">
                                     <input id="payment_off"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                        type="radio" name="method" value="100"
-                                        {{ $payment->method == 100 ? 'checked' : '' }}>
+                                        type="radio" name="method" value="100">
                                     <label class="form-check-label inline-block text-gray-800" for="method">
                                         thanh toán khi nhận hàng
                                     </label>
@@ -80,98 +79,19 @@
                                 <div class="form-check">
                                     <input id="payment_onl"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                        type="radio" name="method" value="200"
-                                        {{ $payment->method == 200 ? 'checked' : '' }}>
+                                        type="radio" name="method" value="200" checked>
                                     <label class="form-check-label inline-block text-gray-800" for="method">
                                         chuyển khoản
                                     </label>
                                 </div>
-                                @if (isset($users))
-                                    <div id="payment_card">
-                                        <div class="mb-4 mt-4">
-                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                                class="h-5">
-                                        </div>
-                                        ************ {{ $users->pm_last_four }}
+                                <div id="payment_card">
+                                    <div class="mb-4 mt-4">
+                                        <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
+                                            class="h-5">
                                     </div>
-                                @else
-                                    <div id="payment_banking" style="display: none">
-                                        <h3 class="text-lg font-medium capitalize mb-4">
-                                            Payment
-                                        </h3>
-                                        <div class="mb-4">
-                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                                class="h-5">
-                                        </div>
-                                        <div class="space-y-4">
-                                            <div>
-                                                <label class="text-gray-600 mb-2 block">
-                                                    Name on card <span class="text-primary">*</span>
-                                                </label>
-                                                <input type="text" id="nameoncard" class="input-box" name="nameoncard">
-                                            </div>
-                                            <div class="grid sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Card number <span class="text-primary">*</span>
-                                                    </label>
-                                                    <input type="text" id="cardnumber" class="input-box"
-                                                        name="cardnumber" ondrop="return false;" onpaste="return false;"
-                                                        onkeypress="return event.charCode>=48 && event.charCode<=57"
-                                                        placeholder="0000 0000 0000 0000">
-                                                </div>
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Cvc <span class="text-primary">*</span>
-                                                    </label>
-                                                    <input type="text" id="cvc" class="input-box" name="cvc"
-                                                        placeholder="123" maxlength="3" ondrop="return false;"
-                                                        onpaste="return false;"
-                                                        onkeypress="return event.charCode>=48 && event.charCode<=57">
-                                                </div>
-
-                                            </div>
-                                            <div class="grid sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Expiration date
-                                                    </label>
-                                                    <select id="month" class="input-box" name="month">
-                                                        <option value="01">01 - January</option>
-                                                        <option value="02">02 - February</option>
-                                                        <option value="03">03 - March</option>
-                                                        <option value="04">04 - April</option>
-                                                        <option value="05">05 - May</option>
-                                                        <option value="06">06 - June</option>
-                                                        <option value="07">07 - July</option>
-                                                        <option value="08">08 - August</option>
-                                                        <option value="09">09 - September</option>
-                                                        <option value="10">10 - October</option>
-                                                        <option value="11">11 - November</option>
-                                                        <option value="12">12 - December</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Year
-                                                    </label>
-                                                    <select id="year" class="input-box" name="year">
-                                                        <option value="2023">2023</option>
-                                                        <option value="2024">2024</option>
-                                                        <option value="2025">2025</option>
-                                                        <option value="2026">2026</option>
-                                                        <option value="2027">2027</option>
-                                                        <option value="2028">2028</option>
-                                                        <option value="2029">2029</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        @else
-                            <div>
+                                    ************ {{ $users->pm_last_four }}
+                                </div>
+                            @else
                                 <div class="form-check">
                                     <input id="payment_off"
                                         class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
@@ -188,92 +108,82 @@
                                         chuyển khoản
                                     </label>
                                 </div>
-                                @if (isset($users))
-                                    <div id="payment_card">
-                                        <div class="mb-4 mt-4">
-                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                                class="h-5">
-                                        </div>
-                                        ************ {{ $users->pm_last_four }}
+                                <div id="payment_banking" style="display: none">
+                                    <h3 class="text-lg font-medium capitalize mb-4">
+                                        Payment
+                                    </h3>
+                                    <div class="mb-4">
+                                        <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
+                                            class="h-5">
                                     </div>
-                                @else
-                                    <div id="payment_banking" style="display: none">
-                                        <h3 class="text-lg font-medium capitalize mb-4">
-                                            Payment
-                                        </h3>
-                                        <div class="mb-4">
-                                            <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                                class="h-5">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="text-gray-600 mb-2 block">
+                                                Name on card <span class="text-primary">*</span>
+                                            </label>
+                                            <input type="text" id="nameoncard" class="input-box" name="nameoncard"
+                                                oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">
                                         </div>
-                                        <div class="space-y-4">
+                                        <div class="grid sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="text-gray-600 mb-2 block">
-                                                    Name on card <span class="text-primary">*</span>
+                                                    Card number <span class="text-primary">*</span>
                                                 </label>
-                                                <input type="text" id="nameoncard" class="input-box" name="nameoncard">
+                                                <input type="text" id="cardnumber" class="input-box" name="cardnumber"
+                                                    ondrop="return false;" onpaste="return false;"
+                                                    onkeypress="return event.charCode>=48 && event.charCode<=57"
+                                                    placeholder="0000 0000 0000 0000">
                                             </div>
-                                            <div class="grid sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Card number <span class="text-primary">*</span>
-                                                    </label>
-                                                    <input type="text" id="cardnumber" class="input-box"
-                                                        name="cardnumber" ondrop="return false;" onpaste="return false;"
-                                                        onkeypress="return event.charCode>=48 && event.charCode<=57"
-                                                        placeholder="0000 0000 0000 0000">
-                                                </div>
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Cvc <span class="text-primary">*</span>
-                                                    </label>
-                                                    <input type="text" id="cvc" class="input-box" name="cvc"
-                                                        placeholder="123" maxlength="3" ondrop="return false;"
-                                                        onpaste="return false;"
-                                                        onkeypress="return event.charCode>=48 && event.charCode<=57">
-                                                </div>
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Cvc <span class="text-primary">*</span>
+                                                </label>
+                                                <input type="text" id="cvc" class="input-box" name="cvc"
+                                                    placeholder="123" maxlength="3" ondrop="return false;"
+                                                    onpaste="return false;"
+                                                    onkeypress="return event.charCode>=48 && event.charCode<=57">
+                                            </div>
 
+                                        </div>
+                                        <div class="grid sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Expiration date
+                                                </label>
+                                                <select id="month" class="input-box" name="month">
+                                                    <option value="01">01 - January</option>
+                                                    <option value="02">02 - February</option>
+                                                    <option value="03">03 - March</option>
+                                                    <option value="04">04 - April</option>
+                                                    <option value="05">05 - May</option>
+                                                    <option value="06">06 - June</option>
+                                                    <option value="07">07 - July</option>
+                                                    <option value="08">08 - August</option>
+                                                    <option value="09">09 - September</option>
+                                                    <option value="10">10 - October</option>
+                                                    <option value="11">11 - November</option>
+                                                    <option value="12">12 - December</option>
+                                                </select>
                                             </div>
-                                            <div class="grid sm:grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Expiration date
-                                                    </label>
-                                                    <select id="month" class="input-box" name="month">
-                                                        <option value="01">01 - January</option>
-                                                        <option value="02">02 - February</option>
-                                                        <option value="03">03 - March</option>
-                                                        <option value="04">04 - April</option>
-                                                        <option value="05">05 - May</option>
-                                                        <option value="06">06 - June</option>
-                                                        <option value="07">07 - July</option>
-                                                        <option value="08">08 - August</option>
-                                                        <option value="09">09 - September</option>
-                                                        <option value="10">10 - October</option>
-                                                        <option value="11">11 - November</option>
-                                                        <option value="12">12 - December</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label class="text-gray-600 mb-2 block">
-                                                        Year
-                                                    </label>
-                                                    <select id="year" class="input-box" name="year">
-                                                        <option value="2023">2023</option>
-                                                        <option value="2024">2024</option>
-                                                        <option value="2025">2025</option>
-                                                        <option value="2026">2026</option>
-                                                        <option value="2027">2027</option>
-                                                        <option value="2028">2028</option>
-                                                        <option value="2029">2029</option>
-                                                    </select>
-                                                </div>
+                                            <div>
+                                                <label class="text-gray-600 mb-2 block">
+                                                    Year
+                                                </label>
+                                                <select id="year" class="input-box" name="year">
+                                                    <option value="2023">2023</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                    <option value="2029">2029</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
-                        @endif
-
+                                </div>
+                            @endif
+                        </div>
                         <div class="mb-3 xl:w-96">
                             <label for="exampleFormControlTextarea1"
                                 class="form-label inline-block mb-2 text-gray-700">Shipping
@@ -347,89 +257,78 @@
                                     chuyển khoản
                                 </label>
                             </div>
-                            @if (isset($users))
-                                <div id="payment_card">
-                                    <div class="mb-4 mt-4">
-                                        <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                            class="h-5">
-                                    </div>
-                                    ************ {{ $users->pm_last_four }}
+                            <div id="payment_banking" style="display: none">
+                                <h3 class="text-lg font-medium capitalize mb-4">
+                                    Payment
+                                </h3>
+                                <div class="mb-4">
+                                    <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
+                                        class="h-5">
                                 </div>
-                            @else
-                                <div id="payment_banking" style="display: none">
-                                    <h3 class="text-lg font-medium capitalize mb-4">
-                                        Payment
-                                    </h3>
-                                    <div class="mb-4">
-                                        <img src="https://leadershipmemphis.org/wp-content/uploads/2020/08/780370.png"
-                                            class="h-5">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-gray-600 mb-2 block">
+                                            Name on card <span class="text-primary">*</span>
+                                        </label>
+                                        <input type="text" id="nameoncard" class="input-box" name="nameoncard">
                                     </div>
-                                    <div class="space-y-4">
+                                    <div class="grid sm:grid-cols-2 gap-4">
                                         <div>
                                             <label class="text-gray-600 mb-2 block">
-                                                Name on card <span class="text-primary">*</span>
+                                                Card number <span class="text-primary">*</span>
                                             </label>
-                                            <input type="text" id="nameoncard" class="input-box" name="nameoncard">
+                                            <input type="text" id="cardnumber" class="input-box" name="cardnumber"
+                                                ondrop="return false;" onpaste="return false;"
+                                                onkeypress="return event.charCode>=48 && event.charCode<=57"
+                                                placeholder="0000 0000 0000 0000">
                                         </div>
-                                        <div class="grid sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="text-gray-600 mb-2 block">
-                                                    Card number <span class="text-primary">*</span>
-                                                </label>
-                                                <input type="text" id="cardnumber" class="input-box" name="cardnumber"
-                                                    ondrop="return false;" onpaste="return false;"
-                                                    onkeypress="return event.charCode>=48 && event.charCode<=57"
-                                                    placeholder="0000 0000 0000 0000">
-                                            </div>
-                                            <div>
-                                                <label class="text-gray-600 mb-2 block">
-                                                    Cvc <span class="text-primary">*</span>
-                                                </label>
-                                                <input type="text" id="cvc" class="input-box" name="cvc"
-                                                    placeholder="123" maxlength="3" ondrop="return false;"
-                                                    onpaste="return false;"
-                                                    onkeypress="return event.charCode>=48 && event.charCode<=57">
-                                            </div>
+                                        <div>
+                                            <label class="text-gray-600 mb-2 block">
+                                                Cvc <span class="text-primary">*</span>
+                                            </label>
+                                            <input type="text" id="cvc" class="input-box" name="cvc" placeholder="123"
+                                                maxlength="3" ondrop="return false;" onpaste="return false;"
+                                                onkeypress="return event.charCode>=48 && event.charCode<=57">
+                                        </div>
 
+                                    </div>
+                                    <div class="grid sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-gray-600 mb-2 block">
+                                                Expiration date
+                                            </label>
+                                            <select id="month" class="input-box" name="month">
+                                                <option value="01">01 - January</option>
+                                                <option value="02">02 - February</option>
+                                                <option value="03">03 - March</option>
+                                                <option value="04">04 - April</option>
+                                                <option value="05">05 - May</option>
+                                                <option value="06">06 - June</option>
+                                                <option value="07">07 - July</option>
+                                                <option value="08">08 - August</option>
+                                                <option value="09">09 - September</option>
+                                                <option value="10">10 - October</option>
+                                                <option value="11">11 - November</option>
+                                                <option value="12">12 - December</option>
+                                            </select>
                                         </div>
-                                        <div class="grid sm:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="text-gray-600 mb-2 block">
-                                                    Expiration date
-                                                </label>
-                                                <select id="month" class="input-box" name="month">
-                                                    <option value="01">01 - January</option>
-                                                    <option value="02">02 - February</option>
-                                                    <option value="03">03 - March</option>
-                                                    <option value="04">04 - April</option>
-                                                    <option value="05">05 - May</option>
-                                                    <option value="06">06 - June</option>
-                                                    <option value="07">07 - July</option>
-                                                    <option value="08">08 - August</option>
-                                                    <option value="09">09 - September</option>
-                                                    <option value="10">10 - October</option>
-                                                    <option value="11">11 - November</option>
-                                                    <option value="12">12 - December</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label class="text-gray-600 mb-2 block">
-                                                    Year
-                                                </label>
-                                                <select id="year" class="input-box" name="year">
-                                                    <option value="2023">2023</option>
-                                                    <option value="2024">2024</option>
-                                                    <option value="2025">2025</option>
-                                                    <option value="2026">2026</option>
-                                                    <option value="2027">2027</option>
-                                                    <option value="2028">2028</option>
-                                                    <option value="2029">2029</option>
-                                                </select>
-                                            </div>
+                                        <div>
+                                            <label class="text-gray-600 mb-2 block">
+                                                Year
+                                            </label>
+                                            <select id="year" class="input-box" name="year">
+                                                <option value="2023">2023</option>
+                                                <option value="2024">2024</option>
+                                                <option value="2025">2025</option>
+                                                <option value="2026">2026</option>
+                                                <option value="2027">2027</option>
+                                                <option value="2028">2028</option>
+                                                <option value="2029">2029</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            </div>
                         </div>
                         <div class="mb-3 xl:w-96">
                             <label for="exampleFormControlTextarea1"

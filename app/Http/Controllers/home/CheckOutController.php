@@ -56,7 +56,6 @@ class CheckOutController extends Controller
             $this->orderRepository->countItem(request());
         }
         $shippings = $this->shippingRepository->getShippingWithUserLogged();
-        $payments = $this->paymentRepository->getPaymentWithUserLogged();
         $carts = $this->cartRepository->getCartWithuserLogged();
 
         collect($carts)->map(function ($cart) use (&$sum) {
@@ -73,15 +72,13 @@ class CheckOutController extends Controller
                         return view("app.checkout")
                             ->with([
                                 'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
-                                'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
-                                'payment' => $payments, 'users' => $user
+                                'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings, 'users' => $user
                             ]);
                     } else {
                         return view("app.checkout")
                             ->with([
                                 'carts' => $carts, 'total' => $total, 'coupon' => $coupon,
                                 'sum' => $sum, 'categoryList' => $category, 'shipping' => $shippings,
-                                'payment' => $payments
                             ]);
                     }
                 } else {
@@ -109,18 +106,14 @@ class CheckOutController extends Controller
             if (Auth::user()->stripe_id != null) {
                 return view("app.checkout")->with([
                     'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
-                    'shipping' => $shippings, 'payment' => $payments, 'users' => $user
+                    'shipping' => $shippings, 'users' => $user
                 ]);
             } else {
                 return view("app.checkout")->with([
                     'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
-                    'shipping' => $shippings, 'payment' => $payments
+                    'shipping' => $shippings
                 ]);
             }
-            return view("app.checkout")->with([
-                'carts' => $carts, 'sum' => $sum, 'categoryList' => $category,
-                'shipping' => $shippings, 'payment' => $payments, 'users' => $user
-            ]);
         } else {
             if (Auth::user()->stripe_id != null) {
                 return view("app.checkout")->with(['carts' => $carts, 'sum' => $sum, 'categoryList' => $category, 'users' => $user]);

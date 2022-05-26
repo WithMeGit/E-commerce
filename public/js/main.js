@@ -165,6 +165,12 @@ $(document).ready(function () {
         }
     });
 
+    $("#nameoncard").keyup(function () {
+        var text = $(this).val();
+
+        $(this).val(text.toUpperCase());
+    });
+
     var cardnumber = document.getElementById("cardnumber");
     if (cardnumber) {
         cardnumber.addEventListener("keydown", function (e) {

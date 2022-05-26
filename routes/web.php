@@ -29,10 +29,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'index']);
     Route::post('/checkout', [\App\Http\Controllers\home\CheckOutController::class, 'placeOrder']);
 
-    Route::get('/payment', [\App\Http\Controllers\home\PaymentController::class, 'index']);
-
-    Route::post('/payment', [\App\Http\Controllers\home\PaymentController::class, 'payment']);
-
     Route::get('/order-complete', function () {
         $category = Category::all()->where('active', '=', 1);
         return view("app.order-complete")->with(['categoryList' => $category]);
